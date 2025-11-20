@@ -1,0 +1,348 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+:root {
+  --blue: #0b63d4;
+  --light-blue: #6fb3ff;
+  --orange: #ff8a1f;
+  --black: #111112;
+  --gray: #f2f4f6;
+  --muted: #6b7280;
+  --card-bg: #ffffff;
+}
+
+/* Header inspired by the PDF header (logo left, vertical bar, PAÑOL block right) */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 44px; /* slightly larger header */
+  background: linear-gradient(180deg, var(--gray), #ffffff);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.header-left img {
+  height: 64px; /* slightly larger logo */
+  width: auto;
+  object-fit: contain;
+}
+.header-title {
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--black);
+  letter-spacing: 0.2px;
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.header-bar {
+  width: 2px;
+  height: 44px;
+  background: var(--black);
+  margin-right: 8px;
+}
+.header-panol {
+  text-align: center;
+}
+.header-panol .big {
+  font-weight: 700;
+  font-size: 16px; /* aumentado para mayor visibilidad */
+  color: var(--black);
+}
+.header-panol .small {
+  font-size: 12px; /* aumentado para leer la escuela secundaria */
+  color: var(--muted);
+}
+
+/* Login page layout */
+.page-login {
+  min-height: calc(100vh - 72px);
+  display: flex;
+  flex-direction: column; /* stack title above the card */
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #fff, #fbfdff);
+  padding: 0 24px 24px 24px;
+}
+.login-card {
+  width: 340px;
+  max-width: calc(100% - 40px);
+  background: var(--card-bg);
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(11,99,212,0.08), 0 4px 8px rgba(17,17,18,0.04);
+  padding: 28px 28px 22px 28px;
+  text-align: center;
+  margin-top: -10px; /* acercar el card al titulo (menos agresivo) */
+}
+
+/* Overlay usado por modales para oscurecer ligeramente el fondo */
+.app-modal-overlay {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.45); /* un poco más oscuro */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+}
+.login-card h2 {
+  margin: 6px 0 18px 0;
+  font-size: 20px;
+  color: var(--black);
+}
+.login-card .field {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  margin-bottom: 12px;
+}
+.login-card label {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.login-card input[type="email"],
+.login-card input[type="password"] {
+  height: 34px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(17,17,18,0.12);
+  font-size: 14px;
+  outline: none;
+}
+.login-card input:focus {
+  box-shadow: 0 0 0 3px rgba(11,99,212,0.12);
+  border-color: var(--blue);
+}
+
+.main-title {
+  font-size: 32px;
+  color: var(--blue);
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-shadow: 0 3px 0 rgba(11,99,212,0.04);
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  text-transform: none;
+  padding: 8px 0 6px 0;
+  display: block;
+  text-align: center;
+  margin-bottom: 6px; /* un poquito de espacio entre título y tarjeta */
+  margin-top: -48px; /* acercar el título un poco más al header */
+}
+
+/* Dashboard header and logout */
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0px; /* aún más cerca del site header */
+  margin-bottom: 4px; /* reducir espacio debajo del título */
+  width: 100%;
+  max-width: none;
+  padding: 0 44px; /* alinear con el header */
+  box-sizing: border-box;
+}
+.dashboard-title {
+  font-size: 24px; /* agrandar texto Menu Principal */
+  margin: 0;
+  color: var(--black);
+  text-align: left;
+}
+.top-actions { display: flex; gap: 8px; align-items: center; }
+.logout-btn { padding: 6px 10px; border-radius: 6px; font-weight: 700; }
+
+/* 3D button style */
+.btn {
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+  border: none;
+}
+.btn-primary {
+  background: linear-gradient(180deg, var(--blue), var(--light-blue));
+  color: white;
+  box-shadow: 0 8px 0 rgba(11,99,212,0.18), 0 2px 6px rgba(17,17,18,0.12);
+}
+.btn-primary:active {
+  transform: translateY(4px);
+  box-shadow: 0 4px 0 rgba(11,99,212,0.12), 0 1px 4px rgba(17,17,18,0.08);
+}
+.btn-ghost {
+  background: linear-gradient(180deg, #fff, #f7f9fb);
+  color: var(--black);
+  border: 1px solid rgba(17,17,18,0.08);
+  box-shadow: 0 6px 0 rgba(0,0,0,0.04);
+}
+.btn-ghost:active {
+  transform: translateY(3px);
+  box-shadow: 0 3px 0 rgba(0,0,0,0.03);
+}
+
+/* Accent variant of ghost button with a very light blue tone for better contrast on white backgrounds */
+.btn-ghost-accent {
+  /* más saturado pero sutil */
+  background: linear-gradient(180deg, rgba(111,179,255,0.20), rgba(235,248,255,0.98));
+  color: var(--blue);
+  border: 1px solid rgba(11,99,212,0.22);
+  box-shadow: 0 6px 0 rgba(11,99,212,0.08);
+}
+.btn-ghost-accent:hover {
+  box-shadow: 0 12px 0 rgba(11,99,212,0.08), 0 8px 20px rgba(17,17,18,0.08);
+  transform: translateY(-2px);
+}
+.btn-ghost-accent:active {
+  transform: translateY(3px);
+  box-shadow: 0 3px 0 rgba(11,99,212,0.05);
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+/* Menu grid for admin dashboard */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 10px; /* separación horizontal un poquito mayor */
+  row-gap: 16px; /* separación vertical un poquito mayor */
+  max-width: 202px; /* 2 * 96px + 10px gap = 202px */
+  margin: 4px auto 0 auto; /* acercar la cuadricula al header */
+  justify-items: center;
+}
+.menu-btn {
+  background: linear-gradient(180deg, #ffb87a, #ff8a1f); /* orange */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  aspect-ratio: 1 / 1; /* force square */
+  width: 96px; /* un poco más anchos para que el nombre quepa mejor */
+  justify-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: 0 8px 0 rgba(255,138,31,0.22), 0 3px 8px rgba(17,17,18,0.06);
+  transition: transform 140ms ease, box-shadow 140ms ease;
+  cursor: pointer;
+  padding: 8px; /* un poco más de padding para la etiqueta */
+}
+.menu-btn .icon {
+  font-size: 22px; /* icono un poco más grande */
+  margin-bottom: 6px; /* espacio entre icono y etiqueta */
+  display: block;
+}
+.menu-btn .label { font-size: 14px; line-height: 1.05; text-align: center; }
+.menu-btn:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 0 rgba(255,138,31,0.18), 0 8px 16px rgba(17,17,18,0.12);
+}
+.menu-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 5px 0 rgba(255,138,31,0.12), 0 2px 6px rgba(17,17,18,0.08);
+}
+@keyframes pulse {
+  0% { box-shadow: 0 8px 0 rgba(255,138,31,0.18); }
+  50% { box-shadow: 0 12px 0 rgba(255,138,31,0.14); }
+  100% { box-shadow: 0 8px 0 rgba(255,138,31,0.18); }
+}
+.menu-btn.pulse { animation: pulse 2.2s infinite; }
+
+/* center the 5th button on a new row without changing its width */
+.menu-btn.informes { grid-column: 1 / -1; justify-self: center; }
+
+@media (max-width: 520px) {
+  .menu-grid { grid-template-columns: repeat(2, 1fr); }
+  .menu-btn { width: 86px; font-size: 13px; }
+}
+
+.login-top-title {
+  text-align: center;
+  margin-bottom: 6px;
+  color: var(--muted);
+}
+
+/* Campos compactos para formularios (menor altura y padding) */
+.compact-field {
+  padding: 6px 8px !important;
+  font-size: 13px !important;
+  height: 34px;
+  box-sizing: border-box;
+}
+
+.compact-btn {
+  padding: 6px 10px !important;
+  font-size: 13px !important;
+  border-radius: 6px;
+}
+
+/* New styles for Entry page */
+.card {
+  background: var(--card-bg);
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(17,17,18,0.06);
+  padding: 20px;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 14px;
+  align-items: start;
+}
+.form-row { grid-column: 1 / -1; }
+.field-label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 600; }
+.input-full { width: 100%; }
+.form-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.btn-primary { padding: 10px 14px; border-radius: 8px; background: linear-gradient(180deg, var(--blue), var(--light-blue)); color: white; border: none; }
+.btn-outline { padding: 10px 14px; border-radius: 8px; background: #fff; border: 1px solid #d6d9de; color: var(--black); }
+
+/* autocomplete box style to match card */
+.autocomplete-list { position: absolute; left: 0; right: 0; top: calc(100% + 6px); background: #fff; border: 1px solid #e6e9ee; border-radius: 8px; box-shadow: 0 10px 20px rgba(17,17,18,0.06); max-height: 240px; overflow-y: auto; z-index: 1600; }
+.autocomplete-item { padding: 10px 12px; cursor: pointer; border-bottom: 1px solid #f1f3f5; }
+.autocomplete-item:hover, .autocomplete-item.active { background: #f4f8ff; }
+
+@media (max-width: 520px) {
+  .site-header { padding: 10px 16px; }
+  .header-right { display: none; }
+  .login-card { width: 94%; margin-top: -6px; }
+  .page-login { padding-top: 4px; }
+  .main-title { margin-top: -24px; margin-bottom: 6px; }
+  .dashboard-header { padding: 0 16px; }
+  .dashboard-title { font-size: 18px; }
+}
+
+/* ensure header stays above other content */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  background: linear-gradient(180deg, var(--gray), #ffffff);
+}
