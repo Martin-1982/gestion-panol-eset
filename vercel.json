@@ -1,3 +1,5 @@
+# Sobrescribe vercel.json con las rutas que sirven los archivos desde /frontend
+cat > vercel.json <<'JSON'
 {
   "version": 2,
   "builds": [
@@ -8,3 +10,4 @@
     { "src": "^/(.*)$", "dest": "/frontend/$1" }
   ]
 }
+JSON
