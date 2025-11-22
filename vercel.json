@@ -4,7 +4,7 @@
     { "src": "frontend/package.json", "use": "@vercel/static-build", "config": { "distDir": "build" } }
   ],
   "routes": [
-    { "src": "^/$", "dest": "/frontend/index.html" },
-    { "src": "^/(.*)$", "dest": "/frontend/$1" }
+    { "src": "^/$", "dest": "/index.html" },
+    { "src": "^/(.*)$", "dest": "/$1" }
   ]
 }
