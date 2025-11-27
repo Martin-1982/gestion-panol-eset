@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
+import API_BASE_URL from '../config';
 import { DELETE_CONFIRM_TEXT } from '../constants/messages';
 
 function Productos({ onBack }) {
@@ -61,7 +62,7 @@ function Productos({ onBack }) {
   const fetchProductos = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:4000/api/productos", {
+      const res = await axios.get(`${API_BASE_URL}/api/productos`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setProductos(res.data);
@@ -110,13 +111,13 @@ function Productos({ onBack }) {
       const payload = { ...form, minimo: Number(form.minimo) || 0 };
       if (editProducto) {
         await axios.put(
-          `http://localhost:4000/api/productos/${editProducto.id}`,
+          `${API_BASE_URL}/api/productos/${editProducto.id}`,
           payload,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         showToast("Producto actualizado", "success");
       } else {
-        await axios.post("http://localhost:4000/api/productos", payload, {
+        await axios.post(`${API_BASE_URL}/api/productos`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
         showToast("Producto agregado", "success");
@@ -137,7 +138,7 @@ function Productos({ onBack }) {
     if (!window.confirm(DELETE_CONFIRM_TEXT)) return;
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:4000/api/productos/${id}`, {
+      await axios.delete(`${API_BASE_URL}/api/productos/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       showToast("Producto eliminado", "success");

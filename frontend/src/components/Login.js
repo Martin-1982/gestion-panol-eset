@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { notify } from '../utils/notify';
+import API_BASE_URL from '../config';
 
 export default function Login({ setPantalla, openRegister, registrationMessage, clearRegistrationMessage }) {
   const [showResetModal, setShowResetModal] = useState(false);
@@ -20,7 +21,7 @@ export default function Login({ setPantalla, openRegister, registrationMessage, 
     }
 
     try {
-      const res = await axios.post("http://localhost:4000/api/auth/login", {
+      const res = await axios.post(`${API_BASE_URL}/api/auth/login`, {
         email,
         password,
       });
@@ -44,7 +45,7 @@ export default function Login({ setPantalla, openRegister, registrationMessage, 
     setResetLoading(true);
     setResetMessage(null);
     try {
-      const res = await axios.post('http://localhost:4000/api/auth/password-reset-request', { email: resetEmail });
+      const res = await axios.post(`${API_BASE_URL}/api/auth/password-reset-request`, { email: resetEmail });
       // mostrar mensaje de éxito y cerrar modal automáticamente después de un momento
       setResetMessage({ type: 'success', text: res.data.message || 'Solicitud enviada. Revisá tu correo.' });
       // esperar 1.4s para que el usuario vea el mensaje, luego cerrar y limpiar

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
+import API_BASE_URL from '../config';
 import { DELETE_CONFIRM_TEXT } from '../constants/messages';
 
 function Proveedores({ onBack }) {
@@ -38,7 +39,7 @@ function Proveedores({ onBack }) {
   const fetchProveedores = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:4000/api/proveedores", {
+      const res = await axios.get(`${API_BASE_URL}/api/proveedores`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setProveedores(res.data);
@@ -79,12 +80,12 @@ function Proveedores({ onBack }) {
     try {
       const token = localStorage.getItem("token");
       if (editProveedor) {
-        await axios.put(`http://localhost:4000/api/proveedores/${editProveedor.id}`, form, {
+        await axios.put(`${API_BASE_URL}/api/proveedores/${editProveedor.id}`, form, {
           headers: { Authorization: `Bearer ${token}` },
         });
         showToast("Proveedor actualizado", "success");
       } else {
-        await axios.post("http://localhost:4000/api/proveedores", form, {
+        await axios.post(`${API_BASE_URL}/api/proveedores`, form, {
           headers: { Authorization: `Bearer ${token}` },
         });
         showToast("Proveedor agregado", "success");
@@ -101,7 +102,7 @@ function Proveedores({ onBack }) {
     if (!window.confirm(DELETE_CONFIRM_TEXT)) return;
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:4000/api/proveedores/${id}`, {
+      await axios.delete(`${API_BASE_URL}/api/proveedores/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       showToast("Proveedor eliminado", "success");

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import API_BASE_URL from '../config';
 
 const modalStyle = { position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: '#fff', padding: 18, border: '1px solid #ccc', borderRadius: 8, zIndex: 1000, width: 460, boxShadow: '0 10px 30px rgba(0,0,0,0.12)' };
 const toastStyle = { position: 'fixed', bottom: 18, left: '50%', transform: 'translateX(-50%)', background: '#2b8a3e', color: '#fff', padding: '10px 14px', borderRadius: 8, boxShadow: '0 6px 18px rgba(0,0,0,0.12)', zIndex: 3000 };
@@ -62,7 +63,7 @@ export default function Entrada({ onBack }) {
   async function fetchProductos() {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get('http://localhost:4000/api/productos', { headers: { Authorization: `Bearer ${token}` } });
+      const res = await axios.get(`${API_BASE_URL}/api/productos`, { headers: { Authorization: `Bearer ${token}` } });
       setProductos(res.data || []);
     } catch (err) { console.error(err); showToast('Error cargando productos','error'); }
   }
@@ -70,7 +71,7 @@ export default function Entrada({ onBack }) {
   async function fetchProveedores() {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get('http://localhost:4000/api/proveedores', { headers: { Authorization: `Bearer ${token}` } });
+      const res = await axios.get(`${API_BASE_URL}/api/proveedores`, { headers: { Authorization: `Bearer ${token}` } });
       setProveedores(res.data || []);
     } catch (err) { console.error(err); showToast('Error cargando proveedores','error'); }
   }
@@ -102,7 +103,7 @@ export default function Entrada({ onBack }) {
     try {
       const token = localStorage.getItem('token');
       const payload = { producto_id: formData.producto_id, usuario_id: 1, proveedor_id: formData.proveedor_id || null, cantidad: Number(formData.cantidad), costo: formData.costo ? Number(formData.costo) : null, donacion: formData.donacion, procedencia: formData.procedenciaDonacion || null, vencimiento: formData.fechaVencimiento || null };
-      await axios.post('http://localhost:4000/api/entradas', payload, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.post(`${API_BASE_URL}/api/entradas`, payload, { headers: { Authorization: `Bearer ${token}` } });
       showToast('Entrada registrada','success');
       // limpiar formulario
       setFormData({ producto_id: '', cantidad: '', costo: '', donacion: false, proveedor_id: '', fechaVencimiento: '', procedenciaDonacion: '' });
@@ -119,7 +120,7 @@ export default function Entrada({ onBack }) {
     try {
       const token = localStorage.getItem('token');
       const payloadProducto = { ...newProducto, unidad: newProducto.unidad === 'otro' ? (newProducto.unidadCustom || '') : newProducto.unidad };
-      const res = await axios.post('http://localhost:4000/api/productos', payloadProducto, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await axios.post(`${API_BASE_URL}/api/productos`, payloadProducto, { headers: { Authorization: `Bearer ${token}` } });
       setProductos(p => [...p, res.data]);
       setShowAddProducto(false);
       setNewProducto({ nombre: '', tipo: '', presentacion: '', unidad: '', minimo: '', unidadCustom: '', categoria: '', subcategoria: '' });
@@ -133,7 +134,7 @@ export default function Entrada({ onBack }) {
     if (!newProveedor.nombre) return showToast('Nombre requerido','error');
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.post('http://localhost:4000/api/proveedores', newProveedor, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await axios.post(`${API_BASE_URL}/api/proveedores`, newProveedor, { headers: { Authorization: `Bearer ${token}` } });
       setProveedores(p => [...p, res.data]);
       setShowAddProveedor(false);
       setNewProveedor({ nombre: '', direccion: '', telefono: '', email: '', contacto: '' });

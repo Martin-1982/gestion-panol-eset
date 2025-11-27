@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import API_BASE_URL from '../config';
 import { createRemitoPdf, generateQrDataUrl } from '../utils/pdf';
 import { DELETE_CONFIRM_TEXT } from '../constants/messages';
 
@@ -53,7 +54,7 @@ export default function Salida({ onBack }) {
   async function fetchProductos() {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:4000/api/productos', { headers: { Authorization: `Bearer ${token}` } });
+      const res = await axios.get(`${API_BASE_URL}/api/productos`, { headers: { Authorization: `Bearer ${token}` } });
       setProductos(res.data || []);
     } catch (err) { console.error(err); }
   }
@@ -61,7 +62,7 @@ export default function Salida({ onBack }) {
   async function fetchAreas() {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:4000/api/salidas/areas', { headers: { Authorization: `Bearer ${token}` } });
+      const res = await axios.get(`${API_BASE_URL}/api/salidas/areas`, { headers: { Authorization: `Bearer ${token}` } });
       const arr = res.data || [];
       setAreasAll(arr);
       setAreaSugerencias(arr.slice(0, 50)); // inicial
@@ -292,7 +293,7 @@ export default function Salida({ onBack }) {
       const token = localStorage.getItem('token');
       // Guardar la salida en el backend: enviar destino, responsable y items
       const payload = { destino, responsable, responsables, items: lista.map(it => ({ producto_id: it.producto_id, cantidad: Number(it.cantidad), nombre: it.nombre })) };
-  const res = await axios.post('http://localhost:4000/api/salidas/bulk', payload, { headers: { Authorization: `Bearer ${token}` } });
+  const res = await axios.post(`${API_BASE_URL}/api/salidas/bulk`, payload, { headers: { Authorization: `Bearer ${token}` } });
   const salidaId = (res.data && res.data.id) ? res.data.id : Date.now();
   const serverFecha = res.data && res.data.fecha ? res.data.fecha : null;
 
@@ -331,7 +332,7 @@ export default function Salida({ onBack }) {
           const form = new FormData();
           const file = new File([blob], filename, { type: 'application/pdf' });
           form.append('file', file);
-          const upl = await fetch('http://localhost:4000/api/files/upload', {
+          const upl = await fetch(`${API_BASE_URL}/api/files/upload`, {
             method: 'POST',
             headers: { Authorization: `Bearer ${token}` },
             body: form

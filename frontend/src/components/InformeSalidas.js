@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import API_BASE_URL from '../config';
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import { createPdfFromRows } from '../utils/pdf';
@@ -34,7 +35,7 @@ export default function InformeSalidas({ onBack }) {
   const fetchSalidas = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:4000/api/informes/salidas", {
+      const res = await axios.get(`${API_BASE_URL}/api/informes/salidas`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSalidas(res.data);
@@ -84,7 +85,7 @@ export default function InformeSalidas({ onBack }) {
       // Los remitos se suben actualmente a uploads/YYYY/MM (no subcarpeta "remitos"),
       // por eso listamos ese directorio aquí. Si cambias la ruta de subida, actualizar.
       const dir = yearMonth || `${yyyy}/${mm}`;
-      const res = await fetch(`http://localhost:4000/api/files/list?dir=${encodeURIComponent(dir)}`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${API_BASE_URL}/api/files/list?dir=${encodeURIComponent(dir)}`, { headers: { Authorization: `Bearer ${token}` } });
       if (!res.ok) throw new Error('No se pudo listar remitos');
       const json = await res.json();
       const files = json.files || [];
@@ -264,7 +265,7 @@ export default function InformeSalidas({ onBack }) {
         form.append('file', new File([fileBlob], filename, { type: fileBlob.type }));
       }
 
-      const res = await fetch('http://localhost:4000/api/informes/enviar', {
+      const res = await fetch(`${API_BASE_URL}/api/informes/enviar`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: form
@@ -324,7 +325,7 @@ export default function InformeSalidas({ onBack }) {
       form.append('text', body || 'Adjunto remito de salida');
       form.append('file', new File([fileBlob], `remito_${sendRemitoSalida.id || Date.now()}.pdf`, { type: 'application/pdf' }));
 
-      const res = await fetch('http://localhost:4000/api/informes/enviar', {
+      const res = await fetch(`${API_BASE_URL}/api/informes/enviar`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: form

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import API_BASE_URL from '../config';
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import { createPdfFromRows } from '../utils/pdf';
@@ -17,7 +18,7 @@ export default function InformeEntradas({ onBack }) {
   const fetchEntradas = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:4000/api/informes/entradas", {
+      const res = await axios.get(`${API_BASE_URL}/api/informes/entradas`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setEntradas(res.data);
@@ -132,7 +133,7 @@ export default function InformeEntradas({ onBack }) {
       form.append('html', `<pre>${body}</pre>`);
       form.append('file', new File([fileBlob], filename, { type: fileBlob.type }));
 
-      const res = await fetch('http://localhost:4000/api/informes/enviar', {
+      const res = await fetch(`${API_BASE_URL}/api/informes/enviar`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: form

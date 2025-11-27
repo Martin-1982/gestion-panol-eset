@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import API_BASE_URL from '../config';
 
 export default function MailLogs({ onBack }) {
   const [logs, setLogs] = useState([]);
@@ -7,7 +8,7 @@ export default function MailLogs({ onBack }) {
   const fetchLogs = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:4000/api/informes/mail_logs', {
+      const res = await axios.get(`${API_BASE_URL}/api/informes/mail_logs`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setLogs(res.data);

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import API_BASE_URL from '../config';
 
 export default function Register({ setPantalla, onClose, onRegistered }) {
   const [email, setEmail] = useState("");
@@ -25,7 +26,7 @@ export default function Register({ setPantalla, onClose, onRegistered }) {
     setLoading(true);
     setMensaje(null);
     try {
-      const res = await axios.post("http://localhost:4000/api/auth/register", {
+      const res = await axios.post(`${API_BASE_URL}/api/auth/register`, {
         nombre,
         apellido,
         email,
@@ -48,7 +49,7 @@ export default function Register({ setPantalla, onClose, onRegistered }) {
         const ok = window.confirm('El correo ya está registrado pero no activado. ¿Querés que reenviemos el correo de activación?');
         if (ok) {
           try {
-            const r2 = await axios.post('http://localhost:4000/api/auth/resend', { email });
+            const r2 = await axios.post(`${API_BASE_URL}/api/auth/resend`, { email });
             const msg2 = r2.data.message || 'Correo de verificación reenviado. Revisá tu correo o el log.';
             setMensaje({ type: 'success', text: msg2 });
             if (onRegistered) onRegistered(msg2); else { setTimeout(() => setPantalla('login'), 1800); }
@@ -69,11 +70,11 @@ export default function Register({ setPantalla, onClose, onRegistered }) {
     // cargar roles y funciones para selects (funciones sin filtrar inicialmente)
     (async () => {
       try {
-        const r = await axios.get('http://localhost:4000/api/roles');
+        const r = await axios.get(`${API_BASE_URL}/api/roles`);
         setRoles(r.data || []);
         // cargar funciones sin filtro inicialmente
         try {
-          const f = await axios.get('http://localhost:4000/api/funciones');
+          const f = await axios.get(`${API_BASE_URL}/api/funciones`);
           setFunciones(f.data || []);
         } catch (e) {
           console.warn('No se pudieron cargar funciones (sin filtro)', e);
@@ -89,7 +90,7 @@ export default function Register({ setPantalla, onClose, onRegistered }) {
   useEffect(() => {
     (async () => {
       try {
-        const f = await axios.get(`http://localhost:4000/api/funciones?rol_id=${rolId}`);
+        const f = await axios.get(`${API_BASE_URL}/api/funciones?rol_id=${rolId}`);
         setFunciones(f.data || []);
       } catch (e) {
         // si falla, dejamos las funciones actuales
