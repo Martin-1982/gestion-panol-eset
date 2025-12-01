@@ -8,6 +8,17 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Manejo de errores no capturados
+process.on('uncaughtException', (error) => {
+  console.error('❌ Error no capturado:', error);
+  console.error('Stack:', error.stack);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('❌ Promise rechazada no manejada:', reason);
+  console.error('Promise:', promise);
+});
+
 // Rutas
 const authRoutes = require("./routes/auth");
 const entradasRoutes = require("./routes/entradas");
