@@ -51,6 +51,30 @@ app.get('/health', async (req, res) => {
 
 // Puerto
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
+const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Servidor backend corriendo en puerto ${PORT}`);
+  console.log(`📍 Escuchando en todas las interfaces (0.0.0.0:${PORT})`);
+  console.log(`🌐 Variables de entorno cargadas:`, {
+    PORT,
+    PGHOST: process.env.PGHOST ? '✓' : '✗',
+    PGDATABASE: process.env.PGDATABASE ? '✓' : '✗',
+    JWT_SECRET: process.env.JWT_SECRET ? '✓' : '✗'
+  });
+});
+
+// Manejo de señales de terminación
+process.on('SIGTERM', () => {
+  console.log('⚠️  SIGTERM recibido, cerrando servidor...');
+  server.close(() => {
+    console.log('✅ Servidor cerrado correctamente');
+    process.exit(0);
+  });
+});
+
+process.on('SIGINT', () => {
+  console.log('⚠️  SIGINT recibido, cerrando servidor...');
+  server.close(() => {
+    console.log('✅ Servidor cerrado correctamente');
+    process.exit(0);
+  });
 });
