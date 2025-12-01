@@ -219,20 +219,29 @@ router.get("/verify/:token", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log('🔐 Intento de login:', { email });
 
     const userResult = await pool.query("SELECT * FROM usuarios WHERE email = $1", [email]);
+    console.log('📊 Usuarios encontrados:', userResult.rows.length);
+    
     if (userResult.rows.length === 0) {
+      console.log('❌ Usuario no encontrado:', email);
       return res.status(400).json({ error: "Usuario no encontrado" });
     }
 
     const user = userResult.rows[0];
+    console.log('👤 Usuario encontrado:', { id: user.id, email: user.email, estado: user.estado });
 
     if (user.estado !== "activo") {
+      console.log('⚠️  Cuenta no verificada:', { email, estado: user.estado });
       return res.status(403).json({ error: "Cuenta no verificada" });
     }
 
     const validPass = await bcrypt.compare(password, user.password);
+    console.log('🔑 Validación de contraseña:', validPass);
+    
     if (!validPass) {
+      console.log('❌ Contraseña incorrecta para:', email);
       return res.status(400).json({ error: "Contraseña incorrecta" });
     }
 
@@ -243,6 +252,7 @@ router.post("/login", async (req, res) => {
       { expiresIn: "8h" }
     );
 
+    console.log('✅ Login exitoso:', { email, id: user.id });
     res.json({ token, user: { id: user.id, nombre: user.nombre, apellido: user.apellido, rol_id: user.rol_id } });
   } catch (err) {
     console.error("❌ Error en /login:", err.message);
