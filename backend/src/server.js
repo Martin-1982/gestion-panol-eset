@@ -21,6 +21,7 @@ const rolesRoutes = require("./routes/roles");
 const funcionesRoutes = require("./routes/funciones");
 const filesRoutes = require("./routes/files");
 const path = require('path');
+const pool = require('./db');
 
 app.use("/api/auth", authRoutes);
 app.use("/api/entradas", entradasRoutes);
@@ -35,6 +36,18 @@ app.use('/api/funciones', funcionesRoutes);
 // serve uploaded files from /uploads
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 app.use('/api/files', filesRoutes);
+
+// Ruta de diagnóstico de salud
+app.get('/health', async (req, res) => {
+  try {
+    // Intentar una consulta simple
+    await pool.query('SELECT 1');
+    res.status(200).json({ status: 'ok', db: 'connected' });
+  } catch (error) {
+    console.error('Error en /health:', error);
+    res.status(500).json({ status: 'error', db: 'disconnected', error: error.message });
+  }
+});
 
 // Puerto
 const PORT = process.env.PORT || 4000;
