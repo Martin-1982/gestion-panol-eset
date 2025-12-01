@@ -2,10 +2,6 @@ import React, { useState } from "react";
 import axios from "axios";
 import { notify } from '../utils/notify';
 import API_BASE_URL from '../config';
-// Defensa runtime: si por alguna razón la URL importada apunta a localhost, forzar Railway.
-const RUNTIME_API_BASE_URL = (typeof API_BASE_URL === 'string' && API_BASE_URL.includes('localhost'))
-  ? 'https://gestion-panol-eset-production.up.railway.app'
-  : API_BASE_URL;
 
 export default function Login({ setPantalla, openRegister, registrationMessage, clearRegistrationMessage }) {
   const [showResetModal, setShowResetModal] = useState(false);
@@ -14,7 +10,6 @@ export default function Login({ setPantalla, openRegister, registrationMessage, 
   const [resetMessage, setResetMessage] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // no necesitamos guardar el token en un state local; lo almacenamos en localStorage
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -24,9 +19,8 @@ export default function Login({ setPantalla, openRegister, registrationMessage, 
       return;
     }
 
-    console.log('🔐 Intentando login con URL:', RUNTIME_API_BASE_URL);
     try {
-      const res = await axios.post(`${RUNTIME_API_BASE_URL}/api/auth/login`, {
+      const res = await axios.post(`${API_BASE_URL}/api/auth/login`, {
         email,
         password,
       });
@@ -50,7 +44,7 @@ export default function Login({ setPantalla, openRegister, registrationMessage, 
     setResetLoading(true);
     setResetMessage(null);
     try {
-  const res = await axios.post(`${RUNTIME_API_BASE_URL}/api/auth/password-reset-request`, { email: resetEmail });
+  const res = await axios.post(`${API_BASE_URL}/api/auth/password-reset-request`, { email: resetEmail });
       // mostrar mensaje de éxito y cerrar modal automáticamente después de un momento
       setResetMessage({ type: 'success', text: res.data.message || 'Solicitud enviada. Revisá tu correo.' });
       // esperar 1.4s para que el usuario vea el mensaje, luego cerrar y limpiar
