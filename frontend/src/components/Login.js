@@ -20,6 +20,7 @@ export default function Login({ setPantalla, openRegister, registrationMessage, 
       return;
     }
 
+    console.log('🔐 Intentando login con URL:', API_BASE_URL);
     try {
       const res = await axios.post(`${API_BASE_URL}/api/auth/login`, {
         email,
