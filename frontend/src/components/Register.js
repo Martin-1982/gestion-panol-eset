@@ -100,76 +100,54 @@ export default function Register({ setPantalla, onClose, onRegistered }) {
   }, [rolId]);
 
   return (
-    // Modal backdrop
-    <div style={{ fontFamily: "Arial" }}>
-      <div onClick={(e)=>{ if(e.target===e.currentTarget) onClose && onClose(); }} style={{position: 'fixed', left:0, top:0, right:0, bottom:0, background:'transparent', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1000}}>
-        <div role="dialog" aria-modal="true" style={{background:'#fff', borderRadius:8, padding:16, width: '360px', maxWidth:'92%', boxShadow:'0 10px 30px rgba(0,0,0,0.22)', transform: 'scale(0.95)'}}>
-            <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:10}}>
-            <h2 style={{margin:0,fontSize:18}}>Registro de Usuario</h2>
-            <button aria-label="Cerrar" onClick={() => onClose && onClose()} style={{border:0, background:'transparent', fontSize:18, cursor:'pointer'}}>✕</button>
-          </div>
-
-          {mensaje && (
-            <div style={{
-              color: mensaje.type === "error" ? "crimson" : mensaje.type === 'warning' ? '#996600' : 'green',
-              marginBottom: 8,
-            }}>
-              {mensaje.text}
-            </div>
-          )}
-
-          <form onSubmit={handleRegister}>
-            <div style={{display:'flex', flexDirection:'column', gap:10}}>
-              <label style={{display:'flex', flexDirection:'column'}}>
-                Correo
-                <input autoFocus type="email" value={email} onChange={(e)=>setEmail(e.target.value)} required />
-              </label>
-
-              <label style={{display:'flex', flexDirection:'column'}}>
-                Nombre
-                <input type="text" value={nombre} onChange={(e)=>setNombre(e.target.value)} required />
-              </label>
-
-              <label style={{display:'flex', flexDirection:'column'}}>
-                Apellido
-                <input type="text" value={apellido} onChange={(e)=>setApellido(e.target.value)} required />
-              </label>
-
-              <label style={{display:'flex', flexDirection:'column'}}>
-                Teléfono
-                <input type="text" value={telefono} onChange={(e)=>setTelefono(e.target.value)} />
-              </label>
-
-              <label style={{display:'flex', flexDirection:'column'}}>
-                Rol
-                <select value={rolId} onChange={(e) => setRolId(Number(e.target.value))}>
-                  {roles.map(r => <option key={r.id} value={r.id}>{r.nombre}</option>)}
-                </select>
-              </label>
-
-              <label style={{display:'flex', flexDirection:'column'}}>
-                Función
-                <select value={funcionId} onChange={(e) => setFuncionId(Number(e.target.value))}>
-                  {funciones.map(f => <option key={f.id} value={f.id}>{f.nombre}</option>)}
-                </select>
-              </label>
-
-              <label style={{display:'flex', flexDirection:'column'}}>
-                Contraseña
-                <input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} required />
-              </label>
-
-                <div style={{display:'flex', gap:8, justifyContent:'flex-end', marginTop:6}}>
-                <button type="button" onClick={() => onClose && onClose()} className="btn btn-ghost">Cancelar</button>
-                <button type="submit" className="btn btn-primary" disabled={loading}>{loading ? 'Registrando...' : 'Registrar'}</button>
-              </div>
-            </div>
-          </form>
-
-          <p style={{ marginTop: 12, color: "#666", fontSize: 13 }}>
-            El registro requiere un correo institucional real (@uner.edu.ar). Se enviará un correo de verificación con un enlace para activar la cuenta.
-          </p>
+    <div className="app-modal-overlay">
+      <div className="modal-content" role="dialog" aria-modal="true" style={{ maxWidth: 480 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+          <h3 style={{ margin: 0 }}>Registro de Usuario</h3>
+          <button aria-label="Cerrar" onClick={() => onClose && onClose()} style={{ background: 'none', border: 'none', fontSize: 24, cursor: 'pointer', color: 'var(--gray-600)', padding: 0, width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--radius-md)' }} onMouseOver={(e) => e.currentTarget.style.background = 'var(--gray-200)'} onMouseOut={(e) => e.currentTarget.style.background = 'none'}>✕</button>
         </div>
+        
+        {mensaje && (
+          <div className={`alert ${mensaje.type === 'error' ? 'alert-error' : mensaje.type === 'warning' ? 'alert-warning' : 'alert-success'}`}>
+            {mensaje.text}
+          </div>
+        )}
+        
+        <form onSubmit={handleRegister}>
+          <label htmlFor="reg-email">Correo institucional</label>
+          <input autoFocus type="email" id="reg-email" value={email} onChange={e => setEmail(e.target.value)} required placeholder="correo@uner.edu.ar" />
+          
+          <label htmlFor="reg-nombre">Nombre</label>
+          <input type="text" id="reg-nombre" value={nombre} onChange={e => setNombre(e.target.value)} required />
+          
+          <label htmlFor="reg-apellido">Apellido</label>
+          <input type="text" id="reg-apellido" value={apellido} onChange={e => setApellido(e.target.value)} required />
+          
+          <label htmlFor="reg-telefono">Teléfono</label>
+          <input type="text" id="reg-telefono" value={telefono} onChange={e => setTelefono(e.target.value)} placeholder="Opcional" />
+          
+          <label htmlFor="reg-rol">Rol</label>
+          <select id="reg-rol" value={rolId} onChange={e => setRolId(Number(e.target.value))}>
+            {roles.map(r => <option key={r.id} value={r.id}>{r.nombre}</option>)}
+          </select>
+          
+          <label htmlFor="reg-funcion">Función</label>
+          <select id="reg-funcion" value={funcionId} onChange={e => setFuncionId(Number(e.target.value))}>
+            {funciones.map(f => <option key={f.id} value={f.id}>{f.nombre}</option>)}
+          </select>
+          
+          <label htmlFor="reg-password">Contraseña</label>
+          <input type="password" id="reg-password" value={password} onChange={e => setPassword(e.target.value)} required />
+          
+          <div className="form-actions">
+            <button type="button" onClick={() => onClose && onClose()} className="btn-outline">Cancelar</button>
+            <button type="submit" className="btn-primary" disabled={loading}>{loading ? 'Registrando...' : '✅ Registrar'}</button>
+          </div>
+        </form>
+        
+        <p className="muted" style={{ marginTop: 16, fontSize: 13, textAlign: 'center' }}>
+          Se enviará un correo de verificación a tu dirección institucional (@uner.edu.ar) con un enlace para activar la cuenta.
+        </p>
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { notify } from '../utils/notify';
 import API_BASE_URL from '../config';
+import { FaSpinner } from 'react-icons/fa';
 
 export default function Login({ setPantalla, openRegister, registrationMessage, clearRegistrationMessage }) {
   const [showResetModal, setShowResetModal] = useState(false);
@@ -10,32 +11,32 @@ export default function Login({ setPantalla, openRegister, registrationMessage, 
   const [resetMessage, setResetMessage] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
     if (!email.endsWith("@uner.edu.ar")) {
       notify("Solo se permite correo institucional (@uner.edu.ar)", 'error');
       return;
     }
-
+    setLoading(true);
     try {
       const res = await axios.post(`${API_BASE_URL}/api/auth/login`, {
         email,
         password,
       });
-
-  localStorage.setItem("token", res.data.token);
-      // guardar algunos datos del usuario localmente
+      localStorage.setItem("token", res.data.token);
       if (res.data.user) {
         localStorage.setItem('user', JSON.stringify(res.data.user));
         localStorage.setItem('role', res.data.user.rol_id || 'Usuario');
       }
-      setPantalla("menu"); // redirigir al menú después de login
+      setPantalla("menu");
     } catch (err) {
       console.error(err?.response?.data || err);
-  const text = err?.response?.data?.error || 'Usuario o contraseña incorrectos';
-  notify(text, 'error');
+      const text = err?.response?.data?.error || 'Usuario o contraseña incorrectos';
+      notify(text, 'error');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -44,10 +45,8 @@ export default function Login({ setPantalla, openRegister, registrationMessage, 
     setResetLoading(true);
     setResetMessage(null);
     try {
-  const res = await axios.post(`${API_BASE_URL}/api/auth/password-reset-request`, { email: resetEmail });
-      // mostrar mensaje de éxito y cerrar modal automáticamente después de un momento
+      const res = await axios.post(`${API_BASE_URL}/api/auth/password-reset-request`, { email: resetEmail });
       setResetMessage({ type: 'success', text: res.data.message || 'Solicitud enviada. Revisá tu correo.' });
-      // esperar 1.4s para que el usuario vea el mensaje, luego cerrar y limpiar
       setTimeout(() => {
         setShowResetModal(false);
         setResetEmail('');
@@ -79,6 +78,7 @@ export default function Login({ setPantalla, openRegister, registrationMessage, 
         <div style={{ textAlign: 'center', marginBottom: 12 }}>
           <h1 className="main-title">Sistema de Gestión Pañol</h1>
         </div>
+        
         <div className="login-card">
           <h2>Login</h2>
 
@@ -89,7 +89,9 @@ export default function Login({ setPantalla, openRegister, registrationMessage, 
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                placeholder="correo@uner.edu.ar"
                 required
+                disabled={loading}
               />
             </div>
 
@@ -99,65 +101,61 @@ export default function Login({ setPantalla, openRegister, registrationMessage, 
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
                 required
+                disabled={loading}
               />
             </div>
 
-            <div className="actions">
-              <button className="btn btn-primary" type="submit">Ingresar</button>
-              <button className="btn btn-ghost" type="button" onClick={() => openRegister && openRegister()}>
-                Registrarse
-              </button>
-            </div>
-            <div style={{marginTop:8}}>
-              <button type="button" className="btn btn-link" onClick={() => setShowResetModal(true)}>
-                ¿Olvidaste tu contraseña?
-              </button>
-            </div>
-            {/* Registro: mostrar modal de confirmación si registrationMessage existe */}
-            {registrationMessage && (
-              <div style={{position:'fixed', left:0, top:0, right:0, bottom:0, display:'flex', alignItems:'center', justifyContent:'center', zIndex:1200}}>
-                <div style={{background:'#fff', padding:16, borderRadius:8, boxShadow:'0 10px 30px rgba(0,0,0,0.25)', maxWidth:420}}>
-                  <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-                    <strong>Registro</strong>
-                    <button onClick={() => clearRegistrationMessage && clearRegistrationMessage()} style={{border:0, background:'transparent', cursor:'pointer'}}>✕</button>
-                  </div>
-                  <div style={{marginTop:8}}>{registrationMessage}</div>
-                  <div style={{textAlign:'right', marginTop:12}}>
-                    <button className="btn btn-primary" onClick={() => clearRegistrationMessage && clearRegistrationMessage()}>Cerrar</button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Modal central para restablecimiento */}
-            {showResetModal && (
-              <div style={{position:'fixed', left:0, top:0, right:0, bottom:0, background:'rgba(0,0,0,0.35)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1100}} onClick={(e)=>{ if(e.target===e.currentTarget) { setShowResetModal(false); setResetEmail(''); setResetMessage(null); } }}>
-                <div role="dialog" aria-modal="true" style={{background:'#fff', padding:16, borderRadius:8, width:360, maxWidth:'94%', boxShadow:'0 10px 30px rgba(0,0,0,0.3)'}}>
-                  <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-                    <h3 style={{margin:0}}>Restablecer contraseña</h3>
-                    <button aria-label="Cerrar" onClick={() => { setShowResetModal(false); setResetEmail(''); setResetMessage(null); }} style={{border:0, background:'transparent', fontSize:18, cursor:'pointer'}}>
-✕</button>
-                  </div>
-                  <p style={{marginTop:8, marginBottom:8, color:'#444'}}>Ingresá tu correo institucional para recibir un enlace de restablecimiento.</p>
-                  {resetMessage && <div style={{color: resetMessage.type === 'error' ? 'crimson' : 'green', marginBottom:8}}>{resetMessage.text}</div>}
-                  <div style={{display:'flex', gap:8, flexDirection:'column'}}>
-                    <input type="email" placeholder="tu@uner.edu.ar" value={resetEmail} onChange={(e)=>setResetEmail(e.target.value)} />
-                    <div style={{display:'flex', justifyContent:'flex-end', gap:8}}>
-                      <button className="btn btn-ghost" onClick={() => { setShowResetModal(false); setResetEmail(''); setResetMessage(null); }}>Cancelar</button>
-                      {resetMessage && resetMessage.type === 'error' && (
-                        <button className="btn btn-ghost" onClick={async ()=>{ await sendReset(); }} disabled={resetLoading}>{resetLoading ? 'Reintentando...' : 'Reintentar'}</button>
-                      )}
-                      <button className="btn btn-primary" onClick={async ()=>{ await sendReset(); }} disabled={resetLoading}>{resetLoading ? 'Enviando...' : 'Enviar'}</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+            <button type="submit" className="btn-primary btn-full" disabled={loading}>
+              {loading ? <><FaSpinner className="spinner" /> Cargando...</> : 'Iniciar sesión'}
+            </button>
           </form>
+
+          <div className="login-links">
+            <button onClick={() => setShowResetModal(true)} className="link-btn">¿Olvidaste tu contraseña?</button>
+            <button onClick={openRegister} className="link-btn">Registrarse</button>
+          </div>
+
+          {registrationMessage && (
+            <div className="alert alert-success">
+              {registrationMessage}
+              <button onClick={clearRegistrationMessage} className="close-btn">×</button>
+            </div>
+          )}
         </div>
       </main>
+
+      {showResetModal && (
+        <div className="app-modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) { setShowResetModal(false); setResetEmail(''); setResetMessage(null); } }}>
+          <div className="modal-content" role="dialog" aria-modal="true">
+            <h3>Restablecer contraseña</h3>
+            <p className="muted">Ingresá tu correo institucional y te enviaremos un enlace para restablecer tu contraseña.</p>
+            
+            <label>Correo institucional</label>
+            <input
+              type="email"
+              value={resetEmail}
+              onChange={(e) => setResetEmail(e.target.value)}
+              placeholder="correo@uner.edu.ar"
+              disabled={resetLoading}
+            />
+            
+            {resetMessage && (
+              <div className={`alert ${resetMessage.type === 'error' ? 'alert-error' : 'alert-success'}`}>
+                {resetMessage.text}
+              </div>
+            )}
+            
+            <div className="form-actions">
+              <button onClick={() => { setShowResetModal(false); setResetEmail(''); setResetMessage(null); }} className="btn-outline" disabled={resetLoading}>Cancelar</button>
+              <button onClick={sendReset} className="btn-primary" disabled={resetLoading}>
+                {resetLoading ? <><FaSpinner className="spinner" /> Enviando...</> : 'Enviar enlace'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
-

@@ -208,136 +208,145 @@ function Productos({ onBack }) {
   };
 
   return (
-    <div style={{ padding: "20px", position: "relative" }}>
-      <h2>🧾 Gestión de Productos</h2>
+    <div className="main-content">
+      <div className="card card-responsive">
+        {/* Toast abajo-centro */}
+        {toast.visible && (
+          <div className="toast" style={{ background: toast.type === "error" ? 'var(--error)' : 'var(--success)', color: 'var(--white)', left: '50%', transform: 'translateX(-50%)', minWidth: 220, fontWeight: 500, fontSize: '1.05rem', zIndex: 2000 }}>
+            {toast.message}
+          </div>
+        )}
 
-      {/* Toast abajo-centro */}
-      {toast.visible && (
-        <div style={{ ...toastStyle, ...(toast.type === "error" ? toastErrorStyle : {}) }}>
-          {toast.message}
+        {/* Header con título y botones */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
+          <h2 style={{ margin: 0, fontSize: '24px', color: 'var(--primary)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span>🧾</span>
+            <span>Gestión de Productos</span>
+          </h2>
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <button ref={newButtonRef} className="btn-primary" onClick={() => handleOpenModal()}>➕ Nuevo producto</button>
+            <button className="btn-outline" onClick={onBack}>⬅ Volver</button>
+          </div>
         </div>
-      )}
 
-      <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
-        <button ref={newButtonRef} onClick={() => handleOpenModal()}>➕ Nuevo producto</button>
-        <button onClick={onBack}>⬅ Volver</button>
+        {/* Filtros y búsqueda */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', marginBottom: '24px' }}>
+          <input
+            className="input"
+            placeholder="🔎 Buscar (nombre, categoría...)"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
 
-        <input
-          placeholder="🔎 Buscar (nombre, categoría, subcat...)"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          style={{ marginLeft: "8px", flex: 1, padding: "6px" }}
-        />
-
-        <select value={filterTipo} onChange={(e) => setFilterTipo(e.target.value)}>
-          <option value="">— Tipo —</option>
-          <option value="uso">Uso</option>
-          <option value="consumo">Consumo</option>
-        </select>
-
-        <select value={filterCategoria} onChange={(e) => setFilterCategoria(e.target.value)}>
-          <option value="">— Categoría —</option>
-          {categorias.map((c,i)=> <option key={i} value={c}>{c}</option>)}
-        </select>
-
-        <select value={filterSubcategoria} onChange={(e) => setFilterSubcategoria(e.target.value)}>
-          <option value="">— Subcategoría —</option>
-          {subcategorias.map((s,i)=> <option key={i} value={s}>{s}</option>)}
-        </select>
-      </div>
-
-      <table border="1" cellPadding="6" style={{ width: "100%", borderCollapse: "collapse" }}>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Tipo</th>
-            <th>Categoría</th>
-            <th>Subcategoría</th>
-            <th>Presentación</th>
-            <th>Unidad</th>
-            <th>Mínimo</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filtered.map(p => (
-            <tr key={p.id}>
-              <td>{p.nombre}</td>
-              <td>{p.tipo}</td>
-              <td>{p.categoria}</td>
-              <td>{p.subcategoria}</td>
-              <td>{p.presentacion}</td>
-              <td>{p.unidad}</td>
-              <td>{p.minimo}</td>
-              <td>
-                <button onClick={() => handleOpenModal(p)}>✏️</button>
-                <button onClick={() => handleDelete(p.id)}>🗑️</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      {showModal && (
-        <div className="app-modal-overlay" onClick={(e)=>{ if(e.target===e.currentTarget){ setShowModal(false); setCategoriaSuggestions([]); setSubcategoriaSuggestions([]); } }}>
-          <div style={modalStyle} role="dialog" aria-modal="true" aria-labelledby="modal-title">
-            <h3 id="modal-title">{editProducto ? "Editar producto" : "Nuevo producto"}</h3>
-            <input ref={nombreRef} placeholder="Nombre" value={form.nombre} onChange={(e)=> setForm({...form, nombre: e.target.value})} />
-          <select value={form.tipo} onChange={(e)=> setForm({...form, tipo: e.target.value})}>
-            <option value="">-- Tipo --</option>
+          <select className="input" value={filterTipo} onChange={(e) => setFilterTipo(e.target.value)}>
+            <option value="">— Tipo —</option>
             <option value="uso">Uso</option>
             <option value="consumo">Consumo</option>
           </select>
 
-          <div style={{ position: "relative" }}>
-            <input ref={categoriaRef} placeholder="Categoría" value={form.categoria||""} onChange={(e)=> handleCategoriaChange(e.target.value)} />
-            {categoriaSuggestions.length > 0 && (
-              <ul style={listStyle}>
-                {categoriaSuggestions.map((c,i)=> <li key={i} onClick={() => { setForm({...form, categoria:c}); setCategoriaSuggestions([]); }} style={itemStyle}>{c}</li>)}
-              </ul>
-            )}
-          </div>
+          <select className="input" value={filterCategoria} onChange={(e) => setFilterCategoria(e.target.value)}>
+            <option value="">— Categoría —</option>
+            {categorias.map((c,i)=> <option key={i} value={c}>{c}</option>)}
+          </select>
 
-          <div style={{ position: "relative" }}>
-            <input ref={subcategoriaRef} placeholder="Subcategoría" value={form.subcategoria||""} onChange={(e)=> handleSubcategoriaChange(e.target.value)} />
-            {subcategoriaSuggestions.length > 0 && (
-              <ul style={listStyle}>
-                {subcategoriaSuggestions.map((s,i)=> <li key={i} onClick={() => { setForm({...form, subcategoria:s}); setSubcategoriaSuggestions([]); }} style={itemStyle}>{s}</li>)}
-              </ul>
-            )}
-          </div>
+          <select className="input" value={filterSubcategoria} onChange={(e) => setFilterSubcategoria(e.target.value)}>
+            <option value="">— Subcategoría —</option>
+            {subcategorias.map((s,i)=> <option key={i} value={s}>{s}</option>)}
+          </select>
+        </div>
 
-          <input placeholder="Presentación" value={form.presentacion||""} onChange={(e)=> setForm({...form, presentacion: e.target.value})} />
-          <input placeholder="Unidad" value={form.unidad||""} onChange={(e)=> setForm({...form, unidad: e.target.value})} />
-          <input type="number" placeholder="Mínimo" value={form.minimo||0} min={0} step={1} onChange={(e)=> setForm({...form, minimo: e.target.value})} />
+        <div style={{ overflowX: 'auto' }}>
+        <table className="data-table" style={{ width: "100%", background: 'var(--white)' }}>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Tipo</th>
+              <th>Categoría</th>
+              <th>Subcategoría</th>
+              <th>Presentación</th>
+              <th>Unidad</th>
+              <th>Mínimo</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map(p => (
+              <tr key={p.id}>
+                <td>{p.nombre}</td>
+                <td>{p.tipo}</td>
+                <td>{p.categoria}</td>
+                <td>{p.subcategoria}</td>
+                <td>{p.presentacion}</td>
+                <td>{p.unidad}</td>
+                <td>{p.minimo}</td>
+                <td>
+                  <button className="btn btn-ghost compact-btn" onClick={() => handleOpenModal(p)}>✏️</button>
+                  <button className="btn btn-ghost compact-btn" onClick={() => handleDelete(p.id)}>🗑️</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
-          <div style={{ marginTop: "10px" }}>
-            <button onClick={handleSave} disabled={saving}>{saving ? 'Guardando...' : '💾 Guardar'}</button>
-            <button onClick={() => setShowModal(false)} style={{ marginLeft: "8px" }}>Cancelar</button>
-          </div>
-          <small style={{ display: "block", marginTop: "6px", color: "#666" }}>Enter = Guardar · Esc = Cancelar</small>
+      {showModal && (
+        <div className="app-modal-overlay" onClick={(e)=>{ if(e.target===e.currentTarget){ setShowModal(false); setCategoriaSuggestions([]); setSubcategoriaSuggestions([]); } }}>
+          <div className="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+            <h3 id="modal-title">{editProducto ? "Editar producto" : "Nuevo producto"}</h3>
+            
+            <label>Nombre</label>
+            <input ref={nombreRef} placeholder="Nombre del producto" value={form.nombre} onChange={(e)=> setForm({...form, nombre: e.target.value})} />
+            
+            <label>Tipo</label>
+            <select value={form.tipo} onChange={(e)=> setForm({...form, tipo: e.target.value})}>
+              <option value="">-- Tipo --</option>
+              <option value="uso">Uso</option>
+              <option value="consumo">Consumo</option>
+            </select>
+
+            <label>Categoría</label>
+            <div style={{ position: "relative" }}>
+              <input ref={categoriaRef} placeholder="Categoría" value={form.categoria||""} onChange={(e)=> handleCategoriaChange(e.target.value)} />
+              {categoriaSuggestions.length > 0 && (
+                <ul style={listStyle}>
+                  {categoriaSuggestions.map((c,i)=> <li key={i} onClick={() => { setForm({...form, categoria:c}); setCategoriaSuggestions([]); }} style={itemStyle}>{c}</li>)}
+                </ul>
+              )}
+            </div>
+
+            <label>Subcategoría</label>
+            <div style={{ position: "relative" }}>
+              <input ref={subcategoriaRef} placeholder="Subcategoría" value={form.subcategoria||""} onChange={(e)=> handleSubcategoriaChange(e.target.value)} />
+              {subcategoriaSuggestions.length > 0 && (
+                <ul style={listStyle}>
+                  {subcategoriaSuggestions.map((s,i)=> <li key={i} onClick={() => { setForm({...form, subcategoria:s}); setSubcategoriaSuggestions([]); }} style={itemStyle}>{s}</li>)}
+                </ul>
+              )}
+            </div>
+
+            <label>Presentación</label>
+            <input placeholder="Ej: Caja, Bolsa, Litro" value={form.presentacion||""} onChange={(e)=> setForm({...form, presentacion: e.target.value})} />
+            
+            <label>Unidad</label>
+            <input placeholder="Ej: kg, litros, unidades" value={form.unidad||""} onChange={(e)=> setForm({...form, unidad: e.target.value})} />
+            
+            <label>Stock Mínimo</label>
+            <input type="number" placeholder="0" value={form.minimo||0} min={0} step={1} onChange={(e)=> setForm({...form, minimo: e.target.value})} />
+
+            <div className="form-actions">
+              <button className="btn btn-outline compact-btn" onClick={() => setShowModal(false)}>Cancelar</button>
+              <button className="btn btn-primary compact-btn" onClick={handleSave} disabled={saving}>{saving ? 'Guardando...' : '💾 Guardar'}</button>
+            </div>
+            <small style={{ display: "block", marginTop: "8px", textAlign: "center", color: "var(--gray-600)" }}>Enter = Guardar · Esc = Cancelar</small>
           </div>
         </div>
-        )}
+      )}
+      </div>
     </div>
   );
 }
 
 // styles
-const modalStyle = {
-  position: "fixed",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  background: "#fff",
-  padding: "18px",
-  border: "1px solid #ccc",
-  borderRadius: "8px",
-  zIndex: 1000,
-  width: "420px",
-  boxShadow: "0 10px 30px rgba(0,0,0,0.12)"
-};
-
 const listStyle = {
   position: "absolute",
   top: "100%",
@@ -357,23 +366,6 @@ const itemStyle = {
   padding: "8px",
   cursor: "pointer",
   borderBottom: "1px solid #eee",
-};
-
-const toastStyle = {
-  position: "fixed",
-  bottom: "18px",
-  left: "50%",
-  transform: "translateX(-50%)",
-  background: "#2b8a3e",
-  color: "#fff",
-  padding: "10px 14px",
-  borderRadius: "8px",
-  boxShadow: "0 6px 18px rgba(0,0,0,0.12)",
-  zIndex: 3000,
-};
-
-const toastErrorStyle = {
-  background: "#c94b4b",
 };
 
 export default Productos;

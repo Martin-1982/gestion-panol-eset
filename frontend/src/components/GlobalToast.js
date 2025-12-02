@@ -17,7 +17,22 @@ export default function GlobalToast() {
   if (!toast.visible) return null;
 
   return (
-    <div style={{ position: 'fixed', bottom: 18, left: '50%', transform: 'translateX(-50%)', background: toast.type === 'error' ? '#c94b4b' : '#2b8a3e', color: '#fff', padding: '10px 14px', borderRadius: 8, boxShadow: '0 6px 18px rgba(0,0,0,0.12)', zIndex: 9999 }}>
+    <div
+      className="toast"
+      role="alert"
+      aria-live="assertive"
+      style={{
+        background: toast.type === 'error' ? 'var(--error)' : 'var(--success)',
+        color: 'var(--white)',
+        boxShadow: 'var(--shadow-md)',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        minWidth: 220,
+        fontWeight: 500,
+        fontSize: '1.05rem',
+        zIndex: 2000
+      }}
+    >
       {toast.message}
     </div>
   );

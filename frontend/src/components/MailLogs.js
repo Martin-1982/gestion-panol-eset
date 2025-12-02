@@ -25,33 +25,51 @@ export default function MailLogs({ onBack }) {
   }, []);
 
   return (
-    <div style={{ padding: 20, fontFamily: 'Arial' }}>
-      <h2>📧 Historial de envíos</h2>
-      <button onClick={onBack}>🔙 Volver</button>
-      <table border="1" cellPadding="6" style={{ width: '100%', marginTop: 10 }}>
-        <thead style={{ background: '#eee' }}>
-          <tr>
-            <th>ID</th>
-            <th>Usuario</th>
-            <th>Destinatario</th>
-            <th>Asunto</th>
-            <th>Estado</th>
-            <th>Fecha</th>
-          </tr>
-        </thead>
-        <tbody>
-          {logs.map((l) => (
-            <tr key={l.id}>
-              <td>{l.id}</td>
-              <td>{l.usuario_id}</td>
-              <td>{l.destinatario}</td>
-              <td>{l.asunto}</td>
-              <td>{l.status}</td>
-              <td>{new Date(l.created_at).toLocaleString()}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="main-content">
+      <div className="dashboard-header">
+        <h2 className="dashboard-title">📧 Historial de envíos</h2>
+        <button onClick={onBack} className="btn-outline">Volver</button>
+      </div>
+      
+      <div className="card card-responsive card-shadow">
+        <div className="table-container">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Destinatario</th>
+                <th>Asunto</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+              </tr>
+            </thead>
+            <tbody>
+              {logs.length === 0 && (
+                <tr>
+                  <td colSpan="6" className="muted" style={{ textAlign: 'center', padding: 24 }}>
+                    No hay registros de envíos
+                  </td>
+                </tr>
+              )}
+              {logs.map((l) => (
+                <tr key={l.id}>
+                  <td>{l.id}</td>
+                  <td>{l.usuario_id}</td>
+                  <td>{l.destinatario}</td>
+                  <td>{l.asunto}</td>
+                  <td>
+                    <span className={`badge ${l.status === 'sent' ? 'badge-success' : 'badge-error'}`}>
+                      {l.status}
+                    </span>
+                  </td>
+                  <td>{new Date(l.created_at).toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }

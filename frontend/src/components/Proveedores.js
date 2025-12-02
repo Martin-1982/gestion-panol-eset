@@ -157,106 +157,114 @@ function Proveedores({ onBack }) {
   };
 
   return (
-    <div style={{ padding: "20px", position: "relative" }}>
-      <h2>🏢 Gestión de Proveedores</h2>
+    <div className="main-content">
+      <div className="card card-responsive">
+        {/* Toast abajo-centro */}
+        {toast.visible && (
+          <div className="toast" style={{ background: toast.type === "error" ? 'var(--error)' : 'var(--success)', color: 'var(--white)', left: '50%', transform: 'translateX(-50%)', minWidth: 220, fontWeight: 500, fontSize: '1.05rem', zIndex: 2000 }}>
+            {toast.message}
+          </div>
+        )}
 
-      {/* Toast abajo-centro */}
-      {toast.visible && (
-        <div style={{ ...toastStyle, ...(toast.type === "error" ? toastErrorStyle : {}) }}>
-          {toast.message}
+        {/* Header con título y botones */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
+          <h2 style={{ margin: 0, fontSize: '24px', color: 'var(--primary)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span>🏢</span>
+            <span>Gestión de Proveedores</span>
+          </h2>
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <button className="btn-primary" onClick={() => handleOpenModal()}>➕ Nuevo proveedor</button>
+            <button className="btn-outline" onClick={onBack}>⬅ Volver</button>
+          </div>
         </div>
-      )}
 
-      <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
-        <button onClick={() => handleOpenModal()}>➕ Nuevo proveedor</button>
-        <button onClick={onBack}>⬅ Volver</button>
+        {/* Búsqueda */}
+        <div style={{ marginBottom: '24px' }}>
+          <input
+            className="input"
+            placeholder="🔎 Buscar proveedor..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            style={{ maxWidth: '400px' }}
+          />
+        </div>
 
-        <input
-          placeholder="🔎 Buscar proveedor..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          style={{ marginLeft: "8px", flex: 1, padding: "6px" }}
-        />
-      </div>
-
-      <table border="1" cellPadding="6" style={{ width: "100%", borderCollapse: "collapse" }}>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Contacto</th>
-            <th>Teléfono</th>
-            <th>Dirección</th>
-            <th>Email</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filtered.map(p => (
-            <tr key={p.id}>
-              <td>{p.nombre}</td>
-              <td>{p.contacto}</td>
-              <td>{p.telefono}</td>
-              <td>{p.direccion}</td>
-              <td>{p.email}</td>
-              <td>
-                <button onClick={() => handleOpenModal(p)}>✏️</button>
-                <button onClick={() => handleDelete(p.id)}>🗑️</button>
-              </td>
+      <div style={{ overflowX: 'auto' }}>
+        <table className="data-table" style={{ width: "100%", background: 'var(--white)' }}>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Contacto</th>
+              <th>Teléfono</th>
+              <th>Dirección</th>
+              <th>Email</th>
+              <th>Acciones</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filtered.map(p => (
+              <tr key={p.id}>
+                <td>{p.nombre}</td>
+                <td>{p.contacto}</td>
+                <td>{p.telefono}</td>
+                <td>{p.direccion}</td>
+                <td>{p.email}</td>
+                <td>
+                  <button className="btn btn-ghost compact-btn" onClick={() => handleOpenModal(p)}>✏️</button>
+                  <button className="btn btn-ghost compact-btn" onClick={() => handleDelete(p.id)}>🗑️</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {showModal && (
         <div className="app-modal-overlay" onClick={(e)=>{ if(e.target===e.currentTarget){ setShowModal(false); setNombreSuggestions([]); } }}>
-          <div style={{...modalStyle, width: '360px'}} role="dialog" aria-modal="true">
-          <h3>{editProveedor ? "Editar proveedor" : "Nuevo proveedor"}</h3>
-          <div style={{ position: "relative" }}>
-            <input
-              ref={nombreRef}
-              placeholder="Nombre"
-              value={form.nombre}
-              onChange={(e) => handleNombreChange(e.target.value)}
-            />
-            {nombreSuggestions.length > 0 && (
-              <ul style={listStyle}>
-                {nombreSuggestions.map((n,i)=> <li key={i} onClick={() => { setForm({...form, nombre:n}); setNombreSuggestions([]); }} style={itemStyle}>{n}</li>)}
-              </ul>
-            )}
-          </div>
+          <div className="modal-content" role="dialog" aria-modal="true">
+            <h3>{editProveedor ? "Editar proveedor" : "Nuevo proveedor"}</h3>
+            
+            <label>Nombre del proveedor</label>
+            <div style={{ position: "relative" }}>
+              <input
+                ref={nombreRef}
+                placeholder="Nombre"
+                value={form.nombre}
+                onChange={(e) => handleNombreChange(e.target.value)}
+              />
+              {nombreSuggestions.length > 0 && (
+                <ul style={listStyle}>
+                  {nombreSuggestions.map((n,i)=> <li key={i} onClick={() => { setForm({...form, nombre:n}); setNombreSuggestions([]); }} style={itemStyle}>{n}</li>)}
+                </ul>
+              )}
+            </div>
 
-          <input placeholder="Contacto" value={form.contacto} onChange={(e)=> setForm({...form, contacto: e.target.value})} />
-          <input placeholder="Teléfono" value={form.telefono} onChange={(e)=> setForm({...form, telefono: e.target.value})} />
-          <input placeholder="Dirección" value={form.direccion} onChange={(e)=> setForm({...form, direccion: e.target.value})} />
-          <input placeholder="Email" value={form.email} onChange={(e)=> setForm({...form, email: e.target.value})} />
+            <label>Persona de contacto</label>
+            <input placeholder="Nombre del contacto" value={form.contacto} onChange={(e)=> setForm({...form, contacto: e.target.value})} />
+            
+            <label>Teléfono</label>
+            <input placeholder="Número de teléfono" value={form.telefono} onChange={(e)=> setForm({...form, telefono: e.target.value})} />
+            
+            <label>Dirección</label>
+            <input placeholder="Dirección completa" value={form.direccion} onChange={(e)=> setForm({...form, direccion: e.target.value})} />
+            
+            <label>Email</label>
+            <input type="email" placeholder="correo@ejemplo.com" value={form.email} onChange={(e)=> setForm({...form, email: e.target.value})} />
 
-          <div style={{ marginTop: "10px" }}>
-            <button onClick={handleSave}>💾 Guardar</button>
-            <button onClick={() => setShowModal(false)} style={{ marginLeft: "8px" }}>Cancelar</button>
-          </div>
-          <small style={{ display: "block", marginTop: "6px", color: "#666" }}>Enter = Guardar · Esc = Cancelar</small>
+            <div className="form-actions">
+              <button className="btn-outline" onClick={() => setShowModal(false)}>Cancelar</button>
+              <button className="btn-primary" onClick={handleSave}>💾 Guardar</button>
+            </div>
+            <small style={{ display: "block", marginTop: "8px", textAlign: "center", color: "var(--gray-600)" }}>Enter = Guardar · Esc = Cancelar</small>
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }
 
 // styles
-const modalStyle = {
-  position: "fixed",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  background: "#fff",
-  padding: "18px",
-  border: "1px solid #ccc",
-  borderRadius: "8px",
-  zIndex: 1000,
-  width: "420px",
-  boxShadow: "0 10px 30px rgba(0,0,0,0.12)"
-};
-
 const listStyle = {
   position: "absolute",
   top: "100%",
@@ -276,23 +284,6 @@ const itemStyle = {
   padding: "8px",
   cursor: "pointer",
   borderBottom: "1px solid #eee",
-};
-
-const toastStyle = {
-  position: "fixed",
-  bottom: "18px",
-  left: "50%",
-  transform: "translateX(-50%)",
-  background: "#2b8a3e",
-  color: "#fff",
-  padding: "10px 14px",
-  borderRadius: "8px",
-  boxShadow: "0 6px 18px rgba(0,0,0,0.12)",
-  zIndex: 3000,
-};
-
-const toastErrorStyle = {
-  background: "#c94b4b",
 };
 
 export default Proveedores;

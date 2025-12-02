@@ -29,36 +29,36 @@ export default function AdminDashboard() {
         return <Proveedores onBack={() => setActivePage("menu")} />;
       default:
           return (
-            <div>
+            <div className="main-content">
               <div className="dashboard-header">
                 <h2 className="dashboard-title">Menú Principal ({role})</h2>
                 <div className="top-actions">
-                  <button className="btn btn-ghost logout-btn" onClick={handleLogout}>Cerrar Sesión</button>
+                  <button className="btn-outline" onClick={handleLogout}>Cerrar Sesión</button>
                 </div>
               </div>
               <div className="menu-grid">
-              <button className="menu-btn pulse orange" onClick={() => setActivePage("productos")} aria-label="Productos">
-                <span className="icon">📦</span>
-                <span className="label">Productos</span>
-              </button>
-              <button className="menu-btn pulse orange" onClick={() => setActivePage("proveedores")} aria-label="Proveedores">
-                <span className="icon">🏢</span>
-                <span className="label">Proveedores</span>
-              </button>
-              <button className="menu-btn pulse orange" onClick={() => setActivePage("entradas")} aria-label="Entradas">
-                <span className="icon">⬇️</span>
-                <span className="label">Entradas</span>
-              </button>
-              <button className="menu-btn pulse orange" onClick={() => setActivePage("salidas")} aria-label="Salidas">
-                <span className="icon">⬆️</span>
-                <span className="label">Salidas</span>
-              </button>
-              <button className="menu-btn pulse orange informes" onClick={() => setActivePage("informes")} aria-label="Informes">
-                <span className="icon">📊</span>
-                <span className="label">Informes</span>
-              </button>
+                <button className="menu-btn pulse orange" onClick={() => setActivePage("productos")} aria-label="Productos">
+                  <span className="icon">📦</span>
+                  <span className="label">Productos</span>
+                </button>
+                <button className="menu-btn pulse orange" onClick={() => setActivePage("proveedores")} aria-label="Proveedores">
+                  <span className="icon">🏢</span>
+                  <span className="label">Proveedores</span>
+                </button>
+                <button className="menu-btn pulse orange" onClick={() => setActivePage("entradas")} aria-label="Entradas">
+                  <span className="icon">⬇️</span>
+                  <span className="label">Entradas</span>
+                </button>
+                <button className="menu-btn pulse orange" onClick={() => setActivePage("salidas")} aria-label="Salidas">
+                  <span className="icon">⬆️</span>
+                  <span className="label">Salidas</span>
+                </button>
+                <button className="menu-btn pulse orange informes" onClick={() => setActivePage("informes")} aria-label="Informes">
+                  <span className="icon">📊</span>
+                  <span className="label">Informes</span>
+                </button>
+              </div>
             </div>
-          </div>
         );
     }
   };
@@ -78,7 +78,7 @@ export default function AdminDashboard() {
         </div>
       </header>
 
-      <main style={{ padding: 8 }}>
+      <main>
         {renderPage()}
       </main>
     </div>

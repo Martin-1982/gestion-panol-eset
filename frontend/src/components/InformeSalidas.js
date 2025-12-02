@@ -368,45 +368,49 @@ export default function InformeSalidas({ onBack }) {
   };
 
   return (
-    <div style={{ padding: 20, fontFamily: "Arial" }}>
-      <div className="dashboard-header" style={{ padding: 0 }}>
+    <div className="main-content">
+      <div className="dashboard-header">
         <h2 className="dashboard-title">📤 Informe de Salidas</h2>
-        <div className="top-actions">
-          <button className="btn btn-ghost" onClick={onBack}>🔙 Volver</button>
-        </div>
+        <button className="btn-outline" onClick={onBack}>Volver</button>
       </div>
 
-      <input
-        type="text"
-        placeholder="Buscar producto, destino o responsable..."
-        value={busqueda}
-        onChange={(e) => setBusqueda(e.target.value)}
-        style={{ width: "40%", padding: "5px" }}
-      />
+      <div className="card card-responsive card-shadow">
+        <div className="form-group">
+          <input
+            type="text"
+            placeholder="Buscar producto, destino o responsable..."
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+            className="input input-full"
+          />
+        </div>
 
-      <table
-        id="tabla-salidas"
-        border="1"
-        cellPadding="6"
-        style={{ width: "100%", marginTop: 10, borderCollapse: "collapse" }}
-      >
-        <thead style={{ background: "#eee" }}>
-          <tr>
-            <th>Fecha</th>
-            <th>Destino</th>
-            <th>Responsable</th>
-            <th>Remito</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filtradas.map((s, idx) => (
-            <tr key={s.id || idx}>
-              <td>{formatDateForRemito(s.fecha)}</td>
-              <td>{s.destino}</td>
-              <td>{s.responsable}</td>
-              <td style={{ textAlign: 'center' }}>
-                {/* Previsualizar remito (ambos en una hoja) */}
-                <button className="compact-btn" title="Previsualizar remito" onClick={async () => {
+        <div className="table-container">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Destino</th>
+                <th>Responsable</th>
+                <th style={{ width: 180 }}>Remito</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtradas.length === 0 && (
+                <tr>
+                  <td colSpan="4" className="muted" style={{ textAlign: 'center', padding: 24 }}>
+                    No hay salidas que mostrar
+                  </td>
+                </tr>
+              )}
+              {filtradas.map((s, idx) => (
+                <tr key={s.id || idx}>
+                  <td>{formatDateForRemito(s.fecha)}</td>
+                  <td>{s.destino}</td>
+                  <td>{s.responsable}</td>
+                  <td>
+                    <div className="action-buttons">{/* Previsualizar remito (ambos en una hoja) */}
+                      <button className="btn-sm btn-outline" title="Previsualizar remito" onClick={async () => {
                   try {
                     // Solo generar la copia de ENTREGA para la previsualización
                     const responsablesArr = parseResponsables(s.responsable);
@@ -424,9 +428,9 @@ export default function InformeSalidas({ onBack }) {
                   } catch (e) { console.error(e); alert('Error generando remito'); }
                 }}>🔍</button>
                 {/* Enviar por correo (elige archivo o entrega) */}
-                <button className="compact-btn" title="Enviar remito" style={{ marginLeft: 8 }} onClick={() => { setSendRemitoSalida(s); setSendRemitoType('entrega'); setSendTo(''); setSendSubject(`Remito de entrega N° S-${s.id || idx}-E`); setSendBody('Adjunto remito de entrega.'); setSendRemitoOpen(true); }}>✉️</button>
+                <button className="btn-sm btn-outline" title="Enviar remito" onClick={() => { setSendRemitoSalida(s); setSendRemitoType('entrega'); setSendTo(''); setSendSubject(`Remito de entrega N° S-${s.id || idx}-E`); setSendBody('Adjunto remito de entrega.'); setSendRemitoOpen(true); }}>✉️</button>
                 {/* Imprimir: genera ambos remitos en la misma hoja y manda a imprimir */}
-                <button className="compact-btn" title="Imprimir remitos" style={{ marginLeft: 8 }} onClick={async () => {
+                <button className="btn-sm btn-outline" title="Imprimir remitos" onClick={async () => {
                   try {
                     // usar la fecha cruda del servidor para el PDF
                     const responsablesArr = parseResponsables(s.responsable);
@@ -448,82 +452,52 @@ export default function InformeSalidas({ onBack }) {
                     setTimeout(() => URL.revokeObjectURL(url), 60 * 1000);
                   } catch (e) { console.error(e); alert('Error imprimiendo remito'); }
                 }}>🖨️</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-        <div style={{ marginTop: 20 }}>
-        <button onClick={() => setVistaPrevia(true)}>🖨️ Imprimir</button>
-  <button onClick={async () => { setRemitosOpen(true); await fetchRemitos(); }} style={{ marginLeft: 10 }}>📄 Remitos</button>
-        <button onClick={previewPDF} style={{ marginLeft: 10 }}>
-          🔍 Vista previa
-        </button>
-        <button onClick={() => setDownloadOpen(true)} style={{ marginLeft: 10 }}>
-          ⬇️ Descargar
-        </button>
-        <button onClick={enviarCorreo} style={{ marginLeft: 10 }}>
-          📧 Correo
-        </button>
-        <button onClick={onBack} style={{ marginLeft: 10 }}>
-          🔙 Volver
-        </button>
+        <div className="form-actions">
+          <button onClick={() => setVistaPrevia(true)} className="btn-outline">🖨️ Imprimir</button>
+          <button onClick={async () => { setRemitosOpen(true); await fetchRemitos(); }} className="btn-outline">📄 Remitos</button>
+          <button onClick={previewPDF} className="btn-outline">🔍 Vista previa</button>
+          <button onClick={() => setDownloadOpen(true)} className="btn-outline">⬇️ Descargar</button>
+          <button onClick={enviarCorreo} className="btn-primary">📧 Enviar por correo</button>
+        </div>
       </div>
 
       {vistaPrevia && (
-        <div
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === "Escape") setVistaPrevia(false);
-            if (e.key === "Enter") imprimir();
-          }}
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            background: "rgba(0,0,0,0.5)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 999,
-          }}
-        >
-          <div
-            style={{
-              background: "white",
-              padding: 20,
-              borderRadius: 10,
-              textAlign: "center",
-            }}
-          >
-            <h3>Vista previa de impresión</h3>
-            <button onClick={imprimir}>🖨️ Imprimir</button>
-            <button onClick={() => setVistaPrevia(false)} style={{ marginLeft: 10 }}>
-              ❌ Cancelar
-            </button>
-            <div style={{ maxHeight: "60vh", overflowY: "auto", marginTop: 10 }}>
-              <table border="1" cellPadding="6" style={{ width: "100%" }}>
-                <thead style={{ background: "#eee" }}>
-                          <tr>
-                            <th>Fecha</th>
-                            <th>Destino</th>
-                            <th>Responsable</th>
-                          </tr>
-                </thead>
-                <tbody>
-                  {filtradas.map((s, idx) => (
-                    <tr key={s.id || idx}>
-                      <td>{formatDateForRemito(s.fecha)}</td>
-                      <td>{s.destino}</td>
-                      <td>{s.responsable}</td>
-                      
+        <div className="app-modal-overlay" onKeyDown={(e) => { if (e.key === "Escape") setVistaPrevia(false); if (e.key === "Enter") imprimir(); }} tabIndex={0}>
+          <div className="app-modal" role="dialog" aria-modal="true">
+            <h3 className="modal-title">Vista previa de impresión</h3>
+            <div className="modal-body">
+              <div className="table-container" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th>Fecha</th>
+                      <th>Destino</th>
+                      <th>Responsable</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {filtradas.map((s, idx) => (
+                      <tr key={s.id || idx}>
+                        <td>{formatDateForRemito(s.fecha)}</td>
+                        <td>{s.destino}</td>
+                        <td>{s.responsable}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div className="modal-actions">
+              <button onClick={imprimir} className="btn-primary">🖨️ Imprimir</button>
+              <button onClick={() => setVistaPrevia(false)} className="btn-outline">Cancelar</button>
             </div>
           </div>
         </div>

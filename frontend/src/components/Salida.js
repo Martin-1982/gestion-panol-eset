@@ -369,135 +369,154 @@ export default function Salida({ onBack }) {
   }
 
   return (
-    <div style={{ padding: 20 }}>
-      {/* Toast abajo-centro */}
-      {toast.visible && (
-        <div style={{ position: 'fixed', bottom: '18px', left: '50%', transform: 'translateX(-50%)', background: toast.type === 'error' ? '#c94b4b' : '#2b8a3e', color: '#fff', padding: '10px 14px', borderRadius: '8px', boxShadow: '0 6px 18px rgba(0,0,0,0.12)', zIndex: 3000 }}>
-          {toast.message}
+    <div className="main-content">
+      <div className="card card-responsive">
+        {toast.visible && <div className={`toast${toast.type === 'error' ? ' toast-error' : ''}`}>{toast.message}</div>}
+        
+        {/* Header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+          <h2 style={{ margin: 0, fontSize: '24px', color: 'var(--primary)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span>📤</span>
+            <span>Registrar Salida</span>
+          </h2>
+          <button type="button" onClick={onBack} className="btn-outline">⬅ Volver</button>
         </div>
-      )}
-      <h2>Registrar Salida</h2>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-        <div>
-          <label style={{ fontSize: 13 }}>Destino / Área</label>
-          <div style={{ position: 'relative' }}>
-            <input value={areaQuery} onChange={e => onAreaChange(e.target.value)} onKeyDown={onAreaKeyDown} placeholder="Buscar destino/área..." className="compact-field input-full" style={{ padding: '6px 8px', fontSize: 13 }} />
-            {areaSugerencias && areaSugerencias.length > 0 && areaQuery && (
-              <div className="autocomplete-list" style={{ position: 'absolute', zIndex: 2000, background: '#fff', border: '1px solid #ddd', width: '100%' }}>
-                {areaSugerencias.map((a, idx) => (
-                  <div key={idx} onClick={() => seleccionarArea(a)} style={{ padding: '6px 8px', cursor: 'pointer', fontSize: 13, background: idx === areaFocusIndex ? '#f0f0f0' : '#fff' }}>{a}</div>
+
+        <div className="form-grid">
+          {/* Destino/Área */}
+          <div>
+            <label>Destino / Área *</label>
+            <div style={{ position: 'relative' }}>
+              <input value={areaQuery} onChange={e => onAreaChange(e.target.value)} onKeyDown={onAreaKeyDown} placeholder="Buscar destino/área..." type="text" />
+              {areaSugerencias && areaSugerencias.length > 0 && areaQuery && (
+                <div className="autocomplete-list">
+                  {areaSugerencias.map((a, idx) => (
+                    <div key={idx} className={`autocomplete-item${idx === areaFocusIndex ? ' active' : ''}`} onClick={() => seleccionarArea(a)}>{a}</div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Responsable */}
+          <div>
+            <label>Responsable *</label>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <input value={responsable} onChange={e => setResponsable(e.target.value)} type="text" placeholder="Nombre del responsable" style={{ flex: 1 }} />
+              <button type="button" className="btn-icon" aria-label="Agregar responsable" onClick={() => { if (responsable && responsable.trim()) { setResponsables(prev => [...prev, responsable.trim()]); setResponsable(''); } }}>➕</button>
+            </div>
+            {responsables.length > 0 && (
+              <div style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {responsables.map((r, idx) => (
+                  <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', background: 'var(--gray-100)', borderRadius: 'var(--border-radius)', fontSize: '14px' }}>
+                    <span>{r}</span>
+                    <button type="button" className="btn-outline" style={{ padding: '4px 12px', fontSize: '12px' }} onClick={() => setResponsables(prev => prev.filter((_, i) => i !== idx))}>Eliminar</button>
+                  </div>
                 ))}
               </div>
             )}
           </div>
-        </div>
-        <div>
-          <label style={{ fontSize: 13 }}>Responsable</label>
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <input value={responsable} onChange={e => setResponsable(e.target.value)} className="compact-field input-full" style={{ padding: '6px 8px', fontSize: 13 }} />
-            <button type="button" className="compact-btn" style={{ padding: '6px 8px' }} onClick={() => { if (responsable && responsable.trim()) { setResponsables(prev => [...prev, responsable.trim()]); setResponsable(''); } }}>Agregar</button>
-          </div>
-          {responsables.length > 0 && (
-            <div style={{ marginTop: 8 }}>
-              {responsables.map((r, idx) => (
-                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                  <div style={{ flex: 1, fontSize: 13 }}>{r}</div>
-                  <button className="compact-btn" style={{ padding: '4px 8px' }} onClick={() => setResponsables(prev => prev.filter((_, i) => i !== idx))}>Eliminar</button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
 
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          <input ref={cantidadRef} value={cantidad} onChange={e => setCantidad(e.target.value)} placeholder="Cantidad" className="compact-field" style={{ width: 90, padding: '6px 8px', fontSize: 13 }} />
-          <div style={{ position: 'relative', flex: 1 }}>
-            <input ref={productoInputRef} value={productoQuery} onChange={e => onProductoChange(e.target.value)} onKeyDown={onProductoKeyDown} placeholder="Buscar producto..." className="compact-field input-full" style={{ padding: '6px 8px', fontSize: 13 }} />
-            {sugerencias.length > 0 && (
-              <div className="autocomplete-list" style={{ position: 'absolute', zIndex: 2000, background: '#fff', border: '1px solid #ddd', width: '100%' }}>
-                {sugerencias.map((s, idx) => (
-                  <div key={s.id} onClick={() => seleccionarProducto(s)} style={{ padding: '6px 8px', cursor: 'pointer', fontSize: 13, background: idx === productoFocusIndex ? '#f0f0f0' : '#fff' }}>{s.nombre}</div>
-                ))}
+          {/* Agregar producto - ocupa 2 columnas */}
+          <div style={{ gridColumn: 'span 2' }}>
+            <label>Agregar Producto</label>
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+              <input ref={cantidadRef} value={cantidad} onChange={e => setCantidad(e.target.value)} placeholder="Cantidad" type="number" min="0" style={{ width: '120px' }} />
+              <div style={{ flex: 1, position: 'relative' }}>
+                <input ref={productoInputRef} value={productoQuery} onChange={e => onProductoChange(e.target.value)} onKeyDown={onProductoKeyDown} placeholder="Buscar producto..." type="text" />
+                {sugerencias.length > 0 && (
+                  <div className="autocomplete-list">
+                    {sugerencias.map((s, idx) => (
+                      <div key={s.id} className={`autocomplete-item${idx === productoFocusIndex ? ' active' : ''}`} onClick={() => seleccionarProducto(s)}>{s.nombre}</div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <button type="button" onClick={agregarItem} className="btn-icon" aria-label="Agregar item">✔️</button>
+            </div>
+          </div>
+
+          {/* Lista de items - ocupa 2 columnas */}
+          <div style={{ gridColumn: 'span 2' }}>
+            <label>Lista de Items</label>
+            {lista.length === 0 && (
+              <div style={{ padding: '32px', textAlign: 'center', color: 'var(--gray-500)', background: 'var(--gray-50)', borderRadius: 'var(--border-radius)', border: '1px dashed var(--gray-300)' }}>
+                No hay items agregados
+              </div>
+            )}
+            
+            {lista.length > 0 && (
+              <div className="table-container">
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th style={{ width: '100px' }}>Cant.</th>
+                      <th>Producto</th>
+                      <th style={{ width: '120px' }}>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {lista.map((it, i) => (
+                      <tr key={it.id}>
+                        <td><strong>{it.cantidad}</strong></td>
+                        <td>{it.nombre}</td>
+                        <td>
+                          <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                            <button onClick={() => editarItem(i)} className="btn-outline" style={{ padding: '4px 12px', fontSize: '12px' }} aria-label="Editar">✏️</button>
+                            <button onClick={() => eliminarItem(i)} className="btn-outline" style={{ padding: '4px 12px', fontSize: '12px' }} aria-label="Eliminar">❌</button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             )}
           </div>
-          <button type="button" onClick={agregarItem} className="compact-btn">✔️</button>
         </div>
 
-        <div style={{ gridColumn: '1 / -1' }}>
-          <label style={{ fontSize: 13 }}>Lista de items</label>
-          <div style={{ border: '1px solid #eee', padding: 6, minHeight: 70, fontSize: 13 }}>
-            {lista.length === 0 && <div style={{ color: '#666' }}>No hay items agregados</div>}
-
-            {/* Encabezado: Cant. | Producto/Descripción */}
-            <div style={{ display: 'flex', alignItems: 'center', padding: '6px 4px', borderBottom: '1px solid #f9f9f9', fontSize: 13, fontWeight: 600 }}>
-              <div style={{ width: 80, textAlign: 'left' }}>Cant.</div>
-              <div style={{ width: 24, textAlign: 'center', color: '#666' }}>|</div>
-              <div style={{ flex: 1, paddingLeft: 8, textAlign: 'left' }}>Producto / Descripción</div>
-            </div>
-
-            {lista.map((it, i) => (
-              <div key={it.id} style={{ display: 'flex', alignItems: 'center', padding: '6px 4px', borderBottom: '1px solid #f1f1f1', fontSize: 13 }}>
-                <div style={{ width: 80, fontWeight: 600, textAlign: 'left' }}>{it.cantidad}</div>
-                <div style={{ width: 24, textAlign: 'center', color: '#333', padding: '0 6px' }}>|</div>
-                <div style={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', flex: 1, textAlign: 'left' }}>{it.nombre}</div>
-                <div style={{ display: 'flex', gap: 6, marginLeft: 8 }}>
-                  <button onClick={() => editarItem(i)} className="compact-btn" style={{ padding: '2px 6px', fontSize: 12, lineHeight: '16px' }}>✏️</button>
-                  <button onClick={() => eliminarItem(i)} className="compact-btn" style={{ padding: '2px 6px', fontSize: 12, lineHeight: '16px' }}>❌</button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'center', gap: 8, marginTop: 24 }}>
-          <button onClick={guardarSalida} className="btn-primary">Guardar salida</button>
-          <button onClick={onBack} className="btn-outline">Volver</button>
+        <div className="form-actions">
+          <button type="button" onClick={onBack} className="btn-outline">Cancelar</button>
+          <button type="button" onClick={guardarSalida} className="btn-primary">Guardar Salida</button>
         </div>
       </div>
 
-      {/* remito modal removed */}
-      {/* Modal unificado para confirmaciones (eliminar / bajo stock / insuficiente / sin stock) */}
       {confirmAction !== null && (
-        <div className="app-modal-overlay" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={(e) => { if (e.target === e.currentTarget) setConfirmAction(null); }}>
-          <div style={{ background: '#fff', padding: 12, borderRadius: 8, width: 360, maxWidth: '90%', boxShadow: '0 6px 18px rgba(0,0,0,0.12)' }}>
-            <div style={{ fontSize: 14, marginBottom: 8, color: '#111' }}>
-              {confirmAction.kind === 'delete' && 'Eliminar item'}
-              {confirmAction.kind === 'lowStock' && 'Stock bajo'}
-              {confirmAction.kind === 'noStock' && 'Sin stock'}
-              {confirmAction.kind === 'insufficient' && 'Stock insuficiente'}
-            </div>
+        <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) setConfirmAction(null); }}>
+          <div className="modal-content" role="dialog" aria-modal="true">
+            <h3>
+              {confirmAction.kind === 'delete' && '❌ Eliminar Item'}
+              {confirmAction.kind === 'lowStock' && '⚠️ Stock Bajo'}
+              {confirmAction.kind === 'noStock' && '⛔ Sin Stock'}
+              {confirmAction.kind === 'insufficient' && '⚠️ Stock Insuficiente'}
+            </h3>
 
-            <div style={{ fontSize: 13, color: '#333', marginBottom: 8 }}>
-              {confirmAction.kind === 'delete' && DELETE_CONFIRM_TEXT}
-              {confirmAction.kind === 'lowStock' && '¿Seguro que querés agregar este item a la salida a pesar del stock bajo?'}
-              {confirmAction.kind === 'noStock' && 'No es posible agregar: este producto no tiene stock disponible.'}
-              {confirmAction.kind === 'insufficient' && `No hay stock suficiente (disponible: ${confirmAction.available}).`}
-            </div>
-
+            {confirmAction.kind === 'delete' && (
+              <p>{DELETE_CONFIRM_TEXT}</p>
+            )}
             {confirmAction.kind === 'lowStock' && (
-              <div style={{ fontSize: 12, color: '#666', marginBottom: 12 }}>Quedan {confirmAction.quedan} unidades.</div>
+              <>
+                <p>¿Seguro que querés agregar este item a la salida a pesar del stock bajo?</p>
+                <p style={{ color: 'var(--gray-600)', fontSize: '14px' }}>Quedan {confirmAction.quedan} unidades después de esta salida.</p>
+              </>
+            )}
+            {confirmAction.kind === 'noStock' && (
+              <p>No es posible agregar: este producto no tiene stock disponible.</p>
+            )}
+            {confirmAction.kind === 'insufficient' && (
+              <p>No hay stock suficiente. Disponible: {confirmAction.available} unidades.</p>
             )}
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
-              {/* boton secundario */}
-              <button onClick={() => setConfirmAction(null)} className="compact-btn" style={{ padding: '6px 10px', background: '#f5f5f5' }}>{confirmAction.kind === 'delete' ? 'Cancelar' : 'Cerrar'}</button>
-
-              {/* botones primarios por tipo */}
+            <div className="form-actions">
+              <button type="button" onClick={() => setConfirmAction(null)} className="btn-outline">{confirmAction.kind === 'delete' ? 'Cancelar' : 'Cerrar'}</button>
               {confirmAction.kind === 'delete' && (
-                <button onClick={() => confirmarAction()} className="compact-btn" style={{ padding: '6px 10px', background: '#d9534f', color: '#fff' }}>Eliminar</button>
+                <button type="button" onClick={() => confirmarAction()} className="btn-primary" style={{ background: 'var(--danger)' }}>Eliminar</button>
               )}
-
               {confirmAction.kind === 'lowStock' && (
-                <button onClick={() => confirmarAction()} className="compact-btn" style={{ padding: '6px 10px', background: '#2b8a3e', color: '#fff' }}>Continuar</button>
+                <button type="button" onClick={() => confirmarAction()} className="btn-primary">Continuar</button>
               )}
-
-              {confirmAction.kind === 'noStock' && (
-                <button onClick={() => setConfirmAction(null)} className="compact-btn" style={{ padding: '6px 10px', background: '#2b8a3e', color: '#fff' }}>Aceptar</button>
-              )}
-
-              {confirmAction.kind === 'insufficient' && (
-                <button onClick={() => setConfirmAction(null)} className="compact-btn" style={{ padding: '6px 10px', background: '#2b8a3e', color: '#fff' }}>Aceptar</button>
+              {(confirmAction.kind === 'noStock' || confirmAction.kind === 'insufficient') && (
+                <button type="button" onClick={() => setConfirmAction(null)} className="btn-primary">Aceptar</button>
               )}
             </div>
           </div>

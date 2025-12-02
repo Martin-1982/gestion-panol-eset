@@ -17,24 +17,31 @@ export default function Informes({ onBack }) {
   if (pantalla === "mail_logs") return <MailLogs onBack={() => setPantalla("menu")} />;
 
   return (
-    <div style={{ padding: "20px", fontFamily: "Arial" }}>
-      <div className="dashboard-header" style={{ padding: 0 }}>
+    <div className="main-content">
+      <div className="dashboard-header">
         <h2 className="dashboard-title">📊 Informes</h2>
-        <div className="top-actions">
-          <button className="btn btn-ghost" onClick={onBack}>🔙 Volver</button>
-        </div>
+        <button className="btn-outline" onClick={onBack}>Volver</button>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 14, alignItems: 'center', marginTop: 8 }}>
-        <button className="btn btn-primary" onClick={() => setPantalla("stock")} style={{ width: 220 }}>📦 Informe de Stock</button>
-        <button className="btn btn-primary" onClick={() => setPantalla("entradas")} style={{ width: 220 }}>➕ Informe de Entradas</button>
-        <button className="btn btn-primary" onClick={() => setPantalla("salidas")} style={{ width: 220 }}>➖ Informe de Salidas</button>
-  <button className="btn btn-ghost btn-ghost-accent" onClick={() => setPantalla("mail_logs")} style={{ width: 220 }}>📧 Historial de Correos</button>
-        {/* remito button removed as requested */}
-        {/* Botón para generar remitos vacíos para completar manualmente */}
+      <div className="menu-grid" style={{ maxWidth: 600, margin: '0 auto', marginTop: 24 }}>
+        <button className="menu-btn pulse blue" onClick={() => setPantalla("stock")}>
+          <span className="icon">📦</span>
+          <span className="label">Informe de Stock</span>
+        </button>
+        <button className="menu-btn pulse blue" onClick={() => setPantalla("entradas")}>
+          <span className="icon">➕</span>
+          <span className="label">Informe de Entradas</span>
+        </button>
+        <button className="menu-btn pulse blue" onClick={() => setPantalla("salidas")}>
+          <span className="icon">➖</span>
+          <span className="label">Informe de Salidas</span>
+        </button>
+        <button className="menu-btn pulse blue" onClick={() => setPantalla("mail_logs")}>
+          <span className="icon">📧</span>
+          <span className="label">Historial de Correos</span>
+        </button>
         <button
-          className="btn btn-outline"
-          style={{ width: 220 }}
+          className="menu-btn pulse gray"
           onClick={async () => {
             // remitos vacíos: izquierda = archivo, derecha = entrega
             // Los campos contienen líneas/espacios para poder imprimir y completar a mano.
@@ -123,31 +130,32 @@ export default function Informes({ onBack }) {
             }
           }}
         >
-          � Generar remito vacío
+          <span className="icon">📄</span>
+          <span className="label">Generar remito vacío</span>
         </button>
-        {/* Modal de previsualización */}
-        {showPreview && (
-          <div className="app-modal-overlay" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }} onClick={(e) => { if (e.target === e.currentTarget) { setShowPreview(false); URL.revokeObjectURL(previewUrl); setPreviewUrl(null); } }}>
-            <div style={{ width: '90%', height: '90%', background: '#fff', borderRadius: 6, boxShadow: '0 8px 36px rgba(0,0,0,0.3)', position: 'relative', display: 'flex', flexDirection: 'column' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: 8, borderBottom: '1px solid #eee' }}>
-                <div style={{ fontWeight: 700 }}>Previsualización de remito</div>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <button className="btn btn-outline" onClick={() => { if (previewUrl) { const a = document.createElement('a'); a.href = previewUrl; a.download = `remito_preview_${new Date().toISOString().slice(0,10)}.pdf`; a.click(); } }}>Descargar</button>
-                  <button className="btn btn-primary" onClick={() => { try { if (iframeRef.current && iframeRef.current.contentWindow) iframeRef.current.contentWindow.print(); } catch (e) { console.warn(e); } }}>Imprimir</button>
-                  <button className="btn btn-ghost" onClick={() => { setShowPreview(false); if (previewUrl) { URL.revokeObjectURL(previewUrl); setPreviewUrl(null); } }}>Cerrar</button>
-                </div>
-              </div>
-              <div style={{ flex: 1 }}>
-                {previewUrl ? (
-                  <iframe ref={iframeRef} src={previewUrl} title="Remito Preview" style={{ width: '100%', height: '100%', border: 'none' }} />
-                ) : (
-                  <div style={{ padding: 20 }}>Generando preview...</div>
-                )}
+      </div>
+
+      {showPreview && (
+        <div className="app-modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) { setShowPreview(false); URL.revokeObjectURL(previewUrl); setPreviewUrl(null); } }}>
+          <div className="app-modal" style={{ width: '90vw', height: '90vh', maxWidth: 'none' }} role="dialog" aria-modal="true">
+            <div className="modal-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderBottom: '1px solid var(--border)' }}>
+              <h3 className="modal-title">Previsualización de remito</h3>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button className="btn-outline" onClick={() => { if (previewUrl) { const a = document.createElement('a'); a.href = previewUrl; a.download = `remito_preview_${new Date().toISOString().slice(0,10)}.pdf`; a.click(); } }}>Descargar</button>
+                <button className="btn-primary" onClick={() => { try { if (iframeRef.current && iframeRef.current.contentWindow) iframeRef.current.contentWindow.print(); } catch (e) { console.warn(e); } }}>Imprimir</button>
+                <button className="btn-outline" onClick={() => { setShowPreview(false); if (previewUrl) { URL.revokeObjectURL(previewUrl); setPreviewUrl(null); } }}>Cerrar</button>
               </div>
             </div>
+            <div style={{ flex: 1, overflow: 'hidden' }}>
+              {previewUrl ? (
+                <iframe ref={iframeRef} src={previewUrl} title="Remito Preview" style={{ width: '100%', height: '100%', border: 'none' }} />
+              ) : (
+                <div className="muted" style={{ padding: 40, textAlign: 'center' }}>Generando preview...</div>
+              )}
+            </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

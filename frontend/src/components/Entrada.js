@@ -2,10 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import API_BASE_URL from '../config';
 
-const modalStyle = { position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: '#fff', padding: 18, border: '1px solid #ccc', borderRadius: 8, zIndex: 1000, width: 460, boxShadow: '0 10px 30px rgba(0,0,0,0.12)' };
-const toastStyle = { position: 'fixed', bottom: 18, left: '50%', transform: 'translateX(-50%)', background: '#2b8a3e', color: '#fff', padding: '10px 14px', borderRadius: 8, boxShadow: '0 6px 18px rgba(0,0,0,0.12)', zIndex: 3000 };
-const toastErrorStyle = { background: '#c94b4b' };
-
 export default function Entrada({ onBack }) {
   const [formData, setFormData] = useState({ producto_id: "", cantidad: "", costo: "", donacion: false, proveedor_id: "", fechaVencimiento: "", procedenciaDonacion: "" });
   const [productos, setProductos] = useState([]);
@@ -164,18 +160,33 @@ export default function Entrada({ onBack }) {
   const filteredProvs = proveedores.filter(p => p.nombre.toLowerCase().includes(providerQuery.toLowerCase()));
 
   return (
-    <div style={{ padding: '22px' }}>
-      <h2 className="dashboard-title">Registrar entrada</h2>
-      <div className="card" style={{ maxWidth: 980, marginTop: 12 }}>
-        <form onSubmit={handleSubmit}>
+    <div className="main-content">
+      <div className="card card-responsive">
+        {/* Toast */}
+        {toast.visible && (
+          <div className="toast" style={{ background: toast.type === 'error' ? 'var(--danger)' : 'var(--success)', color: 'white', position: 'fixed', bottom: 20, left: '50%', transform: 'translateX(-50%)', zIndex: 3000 }}>{toast.message}</div>
+        )}
+
+        {/* Header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+          <h2 style={{ margin: 0, fontSize: '24px', color: 'var(--primary)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span>📥</span>
+            <span>Registrar Entrada</span>
+          </h2>
+          <button type="button" onClick={onBack} className="btn-outline">⬅ Volver</button>
+        </div>
+
+        <form onSubmit={handleSubmit} autoComplete="off">
           <div className="form-grid">
-            <div style={{ position: 'relative' }}>
-              <label className="field-label">Producto</label>
-              <div style={{ display: 'flex', gap: 8 }}>
+            
+            {/* Producto */}
+            <div>
+              <label>Producto *</label>
+              <div style={{ display: 'flex', gap: '8px' }}>
                 <div style={{ flex: 1, position: 'relative' }}>
                   <input
                     ref={productInputRef}
-                    className="compact-field input-full"
+                    type="text"
                     placeholder="Buscar producto..."
                     value={productQuery}
                     onChange={(e) => { setProductQuery(e.target.value); setShowSuggestions(true); setHighlightedIndex(-1); setFormData(prev => ({ ...prev, producto_id: '' })); }}
@@ -190,32 +201,30 @@ export default function Entrada({ onBack }) {
                   {showSuggestions && productQuery !== '' && (
                     <div className="autocomplete-list">
                       {filteredProducts.slice(0, 20).map((p, idx) => (
-                        <div key={p.id} className={`autocomplete-item ${idx === highlightedIndex ? 'active' : ''}`} onMouseDown={(ev) => ev.preventDefault()} onClick={() => { setFormData(prev => ({ ...prev, producto_id: p.id })); setProductQuery(p.nombre); setShowSuggestions(false); }}>{p.nombre}</div>
+                        <div key={p.id} className={`autocomplete-item${idx === highlightedIndex ? ' active' : ''}`} onMouseDown={(ev) => ev.preventDefault()} onClick={() => { setFormData(prev => ({ ...prev, producto_id: p.id })); setProductQuery(p.nombre); setShowSuggestions(false); }}>{p.nombre}</div>
                       ))}
-                      {filteredProducts.length === 0 && <div className="autocomplete-item" style={{ color: '#666' }}>No se encontraron productos</div>}
+                      {filteredProducts.length === 0 && <div className="autocomplete-item muted">No se encontraron productos</div>}
                     </div>
                   )}
                 </div>
-                <button type="button" onClick={() => { setShowAddProducto(true); setTimeout(() => newProdNombreRef.current && newProdNombreRef.current.focus(), 60); }} className="compact-btn">➕</button>
+                <button type="button" onClick={() => { setShowAddProducto(true); setTimeout(() => newProdNombreRef.current && newProdNombreRef.current.focus(), 60); }} className="btn-icon" aria-label="Agregar producto">➕</button>
               </div>
-              <select name="producto_id" value={formData.producto_id} onChange={handleChange} style={{ display: 'none' }}>
-                <option value="">-- Seleccionar --</option>
-                {productos.map(p => <option key={p.id} value={p.id}>{p.nombre}</option>)}
-              </select>
             </div>
 
+            {/* Cantidad */}
             <div>
-              <label className="field-label">Cantidad</label>
-              <input name="cantidad" value={formData.cantidad} onChange={handleChange} className="compact-field input-full" type="number" />
+              <label>Cantidad *</label>
+              <input name="cantidad" value={formData.cantidad} onChange={handleChange} type="number" min="0" />
             </div>
 
-            <div style={{ position: 'relative' }}>
-              <label className="field-label">Proveedor</label>
-              <div style={{ display: 'flex', gap: 8 }}>
+            {/* Proveedor */}
+            <div>
+              <label>Proveedor</label>
+              <div style={{ display: 'flex', gap: '8px' }}>
                 <div style={{ flex: 1, position: 'relative' }}>
                   <input
                     ref={providerInputRef}
-                    className="compact-field input-full"
+                    type="text"
                     placeholder="Buscar proveedor..."
                     value={providerQuery}
                     onChange={(e) => { setProviderQuery(e.target.value); setShowProvSuggestions(true); setProvHighlightedIndex(-1); setFormData(prev => ({ ...prev, proveedor_id: '' })); }}
@@ -231,130 +240,154 @@ export default function Entrada({ onBack }) {
                   {showProvSuggestions && providerQuery !== '' && !formData.donacion && (
                     <div className="autocomplete-list">
                       {filteredProvs.slice(0, 20).map((p, idx) => (
-                        <div key={p.id} className={`autocomplete-item ${idx === provHighlightedIndex ? 'active' : ''}`} onMouseDown={(ev) => ev.preventDefault()} onClick={() => { setFormData(prev => ({ ...prev, proveedor_id: p.id })); setProviderQuery(p.nombre); setShowProvSuggestions(false); }}>{p.nombre}</div>
+                        <div key={p.id} className={`autocomplete-item${idx === provHighlightedIndex ? ' active' : ''}`} onMouseDown={(ev) => ev.preventDefault()} onClick={() => { setFormData(prev => ({ ...prev, proveedor_id: p.id })); setProviderQuery(p.nombre); setShowProvSuggestions(false); }}>{p.nombre}</div>
                       ))}
-                      {filteredProvs.length === 0 && <div className="autocomplete-item" style={{ color: '#666' }}>No se encontraron proveedores</div>}
+                      {filteredProvs.length === 0 && <div className="autocomplete-item muted">No se encontraron proveedores</div>}
                     </div>
                   )}
                 </div>
-                <button type="button" onClick={() => { setShowAddProveedor(true); setTimeout(() => proveedorNombreRef.current && proveedorNombreRef.current.focus(), 60); }} className="compact-btn" disabled={formData.donacion}>➕</button>
-              </div>
-              <select name="proveedor_id" value={formData.proveedor_id} onChange={handleChange} style={{ display: 'none' }}>
-                <option value="">-- Seleccionar --</option>
-                {proveedores.map(p => <option key={p.id} value={p.id}>{p.nombre}</option>)}
-              </select>
-            </div>
-
-            <div>
-              <label className="field-label">Costo</label>
-              <input name="costo" value={formData.costo} onChange={handleChange} className="compact-field input-full" type="number" step="0.01" disabled={formData.donacion} />
-            </div>
-
-            <div>
-              <label className="field-label">Donación</label>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <input type="checkbox" name="donacion" checked={formData.donacion} onChange={handleChange} /> <span style={{ color: 'var(--muted)' }}>Es donación</span>
-                <input name="procedenciaDonacion" value={formData.procedenciaDonacion} onChange={handleChange} className="compact-field" placeholder="Procedencia" style={{ marginLeft: 8, minWidth: 220 }} disabled={!formData.donacion} />
+                <button type="button" onClick={() => { setShowAddProveedor(true); setTimeout(() => proveedorNombreRef.current && proveedorNombreRef.current.focus(), 60); }} className="btn-icon" aria-label="Agregar proveedor" disabled={formData.donacion}>➕</button>
               </div>
             </div>
 
+            {/* Costo */}
             <div>
-              <label className="field-label">Fecha de vencimiento</label>
-              <input name="fechaVencimiento" value={formData.fechaVencimiento} onChange={handleChange} className="compact-field input-full" type="date" />
+              <label>Costo</label>
+              <input name="costo" value={formData.costo} onChange={handleChange} type="number" step="0.01" min="0" disabled={formData.donacion} />
             </div>
 
-            <div style={{ display: 'flex', gap: 8, justifyContent: 'center', gridColumn: '1 / -1', width: '100%', position: 'relative', left: '50%', transform: 'translateX(-50%)', marginTop: 24 }}>
-              <button type="button" onClick={() => { setFormData({ producto_id: '', cantidad: '', costo: '', donacion: false, proveedor_id: '', fechaVencimiento: '', procedenciaDonacion: '' }); setProductQuery(''); setProviderQuery(''); setShowSuggestions(false); setShowProvSuggestions(false); onBack(); }} className="btn-outline">Volver</button>
-              <button type="submit" className="btn-primary">Guardar entrada</button>
+            {/* Fecha de vencimiento */}
+            <div>
+              <label>Fecha de Vencimiento</label>
+              <input name="fechaVencimiento" value={formData.fechaVencimiento} onChange={handleChange} type="date" />
             </div>
+
+            {/* Donación - ocupa 2 columnas en pantallas grandes */}
+            <div style={{ gridColumn: 'span 2' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                <input type="checkbox" name="donacion" checked={formData.donacion} onChange={handleChange} />
+                <span>Es donación</span>
+              </label>
+              {formData.donacion && (
+                <input name="procedenciaDonacion" value={formData.procedenciaDonacion} onChange={handleChange} type="text" placeholder="Procedencia de la donación" style={{ marginTop: '8px' }} />
+              )}
+            </div>
+          </div>
+
+          <div className="form-actions">
+            <button type="button" onClick={onBack} className="btn-outline">Cancelar</button>
+            <button type="submit" className="btn-primary">Guardar Entrada</button>
           </div>
         </form>
       </div>
 
-      {toast.visible && <div style={{ ...toastStyle, ...(toast.type === 'error' ? toastErrorStyle : {}) }}>{toast.message}</div>}
+  {toast.visible && <div className={`toast${toast.type === 'error' ? ' toast-error' : ''}`}>{toast.message}</div>}
 
       {showAddProducto && (
-        <div className="app-modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) { setShowAddProducto(false); setNewProducto({ nombre: '', tipo: '', presentacion: '', unidad: '', minimo: '', unidadCustom: '', categoria: '', subcategoria: '' }); setCategoriaSuggestions([]); setSubcategoriaSuggestions([]); } }}>
-          <div style={modalStyle} role="dialog" aria-modal="true">
-            <h3>➕ Nuevo producto</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <input ref={newProdNombreRef} className="compact-field" placeholder="Nombre" value={newProducto.nombre} onChange={(e) => setNewProducto({ ...newProducto, nombre: e.target.value })} />
-              <select className="compact-field" value={newProducto.tipo} onChange={(e) => setNewProducto({ ...newProducto, tipo: e.target.value })}>
-                <option value="">-- Tipo --</option>
-                <option value="uso">Uso</option>
-                <option value="consumo">Consumo</option>
-              </select>
-
-              <div style={{ position: 'relative' }}>
-                <input ref={newProdCategoriaRef} className="compact-field" placeholder="Categoría" value={newProducto.categoria || ''} onChange={(e) => { const v = e.target.value; setNewProducto({ ...newProducto, categoria: v }); const s = categorias.filter(c => c.toLowerCase().includes((v || "").toLowerCase())); setCategoriaSuggestions(s); setCategoriaHighlightedIndex(-1); }} onKeyDown={(e) => {
-                  const list = categoriaSuggestions;
-                  if (e.key === 'ArrowDown') { e.preventDefault(); setCategoriaHighlightedIndex(i => Math.min(i + 1, list.length - 1)); }
-                  else if (e.key === 'ArrowUp') { e.preventDefault(); setCategoriaHighlightedIndex(i => Math.max(i - 1, 0)); }
-                  else if (e.key === 'Enter') { e.preventDefault(); if (categoriaHighlightedIndex >= 0 && list[categoriaHighlightedIndex]) { const sel = list[categoriaHighlightedIndex]; setNewProducto(prev => ({ ...prev, categoria: sel })); setCategoriaSuggestions([]); setCategoriaHighlightedIndex(-1); } }
-                  else if (e.key === 'Escape') { setCategoriaSuggestions([]); setCategoriaHighlightedIndex(-1); }
-                }} />
-                {categoriaSuggestions.length > 0 && (
-                  <ul style={{ listStyle: 'none', padding: 0, margin: 0, position: 'absolute', top: '100%', left: 0, right: 0, background: '#fff', border: '1px solid #eee', zIndex: 2000 }}>
-                    {categoriaSuggestions.map((c, i) => (<li key={i} onMouseDown={(ev) => ev.preventDefault()} onClick={() => { setNewProducto({ ...newProducto, categoria: c }); setCategoriaSuggestions([]); setCategoriaHighlightedIndex(-1); }} style={{ padding: '8px', cursor: 'pointer', borderBottom: '1px solid #f1f3f5', background: i === categoriaHighlightedIndex ? '#f4f8ff' : 'transparent' }}>{c}</li>))}
-                  </ul>
-                )}
-              </div>
-
-              <div style={{ position: 'relative' }}>
-                <input ref={newProdSubcategoriaRef} className="compact-field" placeholder="Subcategoría (opcional)" value={newProducto.subcategoria || ''} onChange={(e) => { const v = e.target.value; setNewProducto({ ...newProducto, subcategoria: v }); const s = subcategorias.filter(su => su.toLowerCase().includes((v || "").toLowerCase())); setSubcategoriaSuggestions(s); setSubcategoriaHighlightedIndex(-1); }} onKeyDown={(e) => {
-                  const list = subcategoriaSuggestions;
-                  if (e.key === 'ArrowDown') { e.preventDefault(); setSubcategoriaHighlightedIndex(i => Math.min(i + 1, list.length - 1)); }
-                  else if (e.key === 'ArrowUp') { e.preventDefault(); setSubcategoriaHighlightedIndex(i => Math.max(i - 1, 0)); }
-                  else if (e.key === 'Enter') { e.preventDefault(); if (subcategoriaHighlightedIndex >= 0 && list[subcategoriaHighlightedIndex]) { const sel = list[subcategoriaHighlightedIndex]; setNewProducto(prev => ({ ...prev, subcategoria: sel })); setSubcategoriaSuggestions([]); setSubcategoriaHighlightedIndex(-1); } }
-                  else if (e.key === 'Escape') { setSubcategoriaSuggestions([]); setSubcategoriaHighlightedIndex(-1); }
-                }} />
-                {subcategoriaSuggestions.length > 0 && (
-                  <ul style={{ listStyle: 'none', padding: 0, margin: 0, position: 'absolute', top: '100%', left: 0, right: 0, background: '#fff', border: '1px solid #eee', zIndex: 2000 }}>
-                    {subcategoriaSuggestions.map((s, i) => (<li key={i} onMouseDown={(ev) => ev.preventDefault()} onClick={() => { setNewProducto({ ...newProducto, subcategoria: s }); setSubcategoriaSuggestions([]); setSubcategoriaHighlightedIndex(-1); }} style={{ padding: '8px', cursor: 'pointer', borderBottom: '1px solid #f1f3f5', background: i === subcategoriaHighlightedIndex ? '#f4f8ff' : 'transparent' }}>{s}</li>))}
-                  </ul>
-                )}
-              </div>
-
-              <input className="compact-field" placeholder="Presentación" value={newProducto.presentacion} onChange={(e) => setNewProducto({ ...newProducto, presentacion: e.target.value })} />
-              <select className="compact-field" value={newProducto.unidad || ""} onChange={(e) => setNewProducto({ ...newProducto, unidad: e.target.value })}>
-                <option value="">-- Unidad --</option>
-                <option value="unidad">Unidad</option>
-                <option value="kg">Kg</option>
-                <option value="g">Gr</option>
-                <option value="lt">Litro</option>
-                <option value="caja">Caja</option>
-                <option value="cajon">Cajon</option>
-                <option value="pack">Pack</option>
-                <option value="paquete">Paquete</option>
-                <option value="otro">Otro</option>
-              </select>
-              {newProducto.unidad === 'otro' && (
-                <input className="compact-field" placeholder="Especificar unidad" value={newProducto.unidadCustom || ''} onChange={(e) => setNewProducto({ ...newProducto, unidadCustom: e.target.value })} />
+        <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) { setShowAddProducto(false); setNewProducto({ nombre: '', tipo: '', presentacion: '', unidad: '', minimo: '', unidadCustom: '', categoria: '', subcategoria: '' }); setCategoriaSuggestions([]); setSubcategoriaSuggestions([]); } }}>
+          <div className="modal-content" role="dialog" aria-modal="true">
+            <h3>➕ Nuevo Producto</h3>
+            
+            <label>Nombre *</label>
+            <input ref={newProdNombreRef} type="text" value={newProducto.nombre} onChange={(e) => setNewProducto({ ...newProducto, nombre: e.target.value })} />
+            
+            <label>Tipo</label>
+            <select value={newProducto.tipo} onChange={(e) => setNewProducto({ ...newProducto, tipo: e.target.value })}>
+              <option value="">-- Seleccionar --</option>
+              <option value="uso">Uso</option>
+              <option value="consumo">Consumo</option>
+            </select>
+            
+            <label>Categoría</label>
+            <div style={{ position: 'relative' }}>
+              <input ref={newProdCategoriaRef} type="text" value={newProducto.categoria || ''} onChange={(e) => { const v = e.target.value; setNewProducto({ ...newProducto, categoria: v }); const s = categorias.filter(c => c.toLowerCase().includes((v || "").toLowerCase())); setCategoriaSuggestions(s); setCategoriaHighlightedIndex(-1); }} onKeyDown={(e) => {
+                const list = categoriaSuggestions;
+                if (e.key === 'ArrowDown') { e.preventDefault(); setCategoriaHighlightedIndex(i => Math.min(i + 1, list.length - 1)); }
+                else if (e.key === 'ArrowUp') { e.preventDefault(); setCategoriaHighlightedIndex(i => Math.max(i - 1, 0)); }
+                else if (e.key === 'Enter') { e.preventDefault(); if (categoriaHighlightedIndex >= 0 && list[categoriaHighlightedIndex]) { const sel = list[categoriaHighlightedIndex]; setNewProducto(prev => ({ ...prev, categoria: sel })); setCategoriaSuggestions([]); setCategoriaHighlightedIndex(-1); } }
+                else if (e.key === 'Escape') { setCategoriaSuggestions([]); setCategoriaHighlightedIndex(-1); }
+              }} />
+              {categoriaSuggestions.length > 0 && (
+                <ul className="autocomplete-list">
+                  {categoriaSuggestions.map((c, i) => (<li key={i} className={`autocomplete-item${i === categoriaHighlightedIndex ? ' active' : ''}`} onMouseDown={(ev) => ev.preventDefault()} onClick={() => { setNewProducto({ ...newProducto, categoria: c }); setCategoriaSuggestions([]); setCategoriaHighlightedIndex(-1); }}>{c}</li>))}
+                </ul>
               )}
-              <input className="compact-field" placeholder="Mínimo" type="number" value={newProducto.minimo} onChange={(e) => setNewProducto({ ...newProducto, minimo: e.target.value })} />
-              <div style={{ marginTop: 8, display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-                <button onClick={handleAddProducto} className="compact-btn">Guardar</button>
-                <button onClick={() => { setShowAddProducto(false); setNewProducto({ nombre: '', tipo: '', presentacion: '', unidad: '', minimo: '', unidadCustom: '', categoria: '', subcategoria: '' }); setCategoriaSuggestions([]); setSubcategoriaSuggestions([]); setCategoriaHighlightedIndex(-1); setSubcategoriaHighlightedIndex(-1); }} className="compact-btn">Cancelar</button>
-              </div>
+            </div>
+            
+            <label>Subcategoría</label>
+            <div style={{ position: 'relative' }}>
+              <input ref={newProdSubcategoriaRef} type="text" value={newProducto.subcategoria || ''} onChange={(e) => { const v = e.target.value; setNewProducto({ ...newProducto, subcategoria: v }); const s = subcategorias.filter(su => su.toLowerCase().includes((v || "").toLowerCase())); setSubcategoriaSuggestions(s); setSubcategoriaHighlightedIndex(-1); }} onKeyDown={(e) => {
+                const list = subcategoriaSuggestions;
+                if (e.key === 'ArrowDown') { e.preventDefault(); setSubcategoriaHighlightedIndex(i => Math.min(i + 1, list.length - 1)); }
+                else if (e.key === 'ArrowUp') { e.preventDefault(); setSubcategoriaHighlightedIndex(i => Math.max(i - 1, 0)); }
+                else if (e.key === 'Enter') { e.preventDefault(); if (subcategoriaHighlightedIndex >= 0 && list[subcategoriaHighlightedIndex]) { const sel = list[subcategoriaHighlightedIndex]; setNewProducto(prev => ({ ...prev, subcategoria: sel })); setSubcategoriaSuggestions([]); setSubcategoriaHighlightedIndex(-1); } }
+                else if (e.key === 'Escape') { setSubcategoriaSuggestions([]); setSubcategoriaHighlightedIndex(-1); }
+              }} />
+              {subcategoriaSuggestions.length > 0 && (
+                <ul className="autocomplete-list">
+                  {subcategoriaSuggestions.map((s, i) => (<li key={i} className={`autocomplete-item${i === subcategoriaHighlightedIndex ? ' active' : ''}`} onMouseDown={(ev) => ev.preventDefault()} onClick={() => { setNewProducto({ ...newProducto, subcategoria: s }); setSubcategoriaSuggestions([]); setSubcategoriaHighlightedIndex(-1); }}>{s}</li>))}
+                </ul>
+              )}
+            </div>
+            
+            <label>Presentación</label>
+            <input type="text" value={newProducto.presentacion} onChange={(e) => setNewProducto({ ...newProducto, presentacion: e.target.value })} />
+            
+            <label>Unidad</label>
+            <select value={newProducto.unidad || ""} onChange={(e) => setNewProducto({ ...newProducto, unidad: e.target.value })}>
+              <option value="">-- Seleccionar --</option>
+              <option value="unidad">Unidad</option>
+              <option value="kg">Kg</option>
+              <option value="g">Gr</option>
+              <option value="lt">Litro</option>
+              <option value="caja">Caja</option>
+              <option value="cajon">Cajón</option>
+              <option value="pack">Pack</option>
+              <option value="paquete">Paquete</option>
+              <option value="otro">Otro</option>
+            </select>
+            
+            {newProducto.unidad === 'otro' && (
+              <>
+                <label>Especificar Unidad</label>
+                <input type="text" value={newProducto.unidadCustom || ''} onChange={(e) => setNewProducto({ ...newProducto, unidadCustom: e.target.value })} />
+              </>
+            )}
+            
+            <label>Stock Mínimo</label>
+            <input type="number" min="0" value={newProducto.minimo} onChange={(e) => setNewProducto({ ...newProducto, minimo: e.target.value })} />
+            
+            <div className="form-actions">
+              <button type="button" onClick={() => { setShowAddProducto(false); setNewProducto({ nombre: '', tipo: '', presentacion: '', unidad: '', minimo: '', unidadCustom: '', categoria: '', subcategoria: '' }); setCategoriaSuggestions([]); setSubcategoriaSuggestions([]); setCategoriaHighlightedIndex(-1); setSubcategoriaHighlightedIndex(-1); }} className="btn-outline">Cancelar</button>
+              <button type="button" onClick={handleAddProducto} className="btn-primary">Guardar</button>
             </div>
           </div>
         </div>
       )}
 
       {showAddProveedor && (
-        <div className="app-modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) { setShowAddProveedor(false); setNewProveedor({ nombre: '', direccion: '', telefono: '', email: '', contacto: '' }); } }}>
-          <div style={modalStyle} role="dialog" aria-modal="true">
-            <h3>➕ Nuevo proveedor</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <input ref={proveedorNombreRef} className="compact-field" placeholder="Nombre" value={newProveedor.nombre} onChange={(e) => setNewProveedor({ ...newProveedor, nombre: e.target.value })} />
-              <input className="compact-field" placeholder="Dirección" value={newProveedor.direccion} onChange={(e) => setNewProveedor({ ...newProveedor, direccion: e.target.value })} />
-              <input className="compact-field" placeholder="Teléfono" value={newProveedor.telefono} onChange={(e) => setNewProveedor({ ...newProveedor, telefono: e.target.value })} />
-              <input className="compact-field" placeholder="E-mail" value={newProveedor.email} onChange={(e) => setNewProveedor({ ...newProveedor, email: e.target.value })} />
-              <input className="compact-field" placeholder="Contacto" value={newProveedor.contacto} onChange={(e) => setNewProveedor({ ...newProveedor, contacto: e.target.value })} />
-              <div style={{ marginTop: 8, display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-                <button onClick={handleAddProveedor} className="compact-btn">Guardar</button>
-                <button onClick={() => { setShowAddProveedor(false); setNewProveedor({ nombre: '', direccion: '', telefono: '', email: '', contacto: '' }); }} className="compact-btn">Cancelar</button>
-              </div>
+        <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) { setShowAddProveedor(false); setNewProveedor({ nombre: '', direccion: '', telefono: '', email: '', contacto: '' }); } }}>
+          <div className="modal-content" role="dialog" aria-modal="true">
+            <h3>➕ Nuevo Proveedor</h3>
+            
+            <label>Nombre *</label>
+            <input ref={proveedorNombreRef} type="text" value={newProveedor.nombre} onChange={(e) => setNewProveedor({ ...newProveedor, nombre: e.target.value })} />
+            
+            <label>Dirección</label>
+            <input type="text" value={newProveedor.direccion} onChange={(e) => setNewProveedor({ ...newProveedor, direccion: e.target.value })} />
+            
+            <label>Teléfono</label>
+            <input type="text" value={newProveedor.telefono} onChange={(e) => setNewProveedor({ ...newProveedor, telefono: e.target.value })} />
+            
+            <label>Email</label>
+            <input type="email" value={newProveedor.email} onChange={(e) => setNewProveedor({ ...newProveedor, email: e.target.value })} />
+            
+            <label>Contacto</label>
+            <input type="text" value={newProveedor.contacto} onChange={(e) => setNewProveedor({ ...newProveedor, contacto: e.target.value })} />
+            
+            <div className="form-actions">
+              <button type="button" onClick={() => { setShowAddProveedor(false); setNewProveedor({ nombre: '', direccion: '', telefono: '', email: '', contacto: '' }); }} className="btn-outline">Cancelar</button>
+              <button type="button" onClick={handleAddProveedor} className="btn-primary">Guardar</button>
             </div>
           </div>
         </div>

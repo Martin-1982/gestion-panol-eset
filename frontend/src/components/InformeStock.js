@@ -184,158 +184,128 @@ export default function InformeStock({ onBack }) {
   };
 
   return (
-    <div style={{ padding: "20px", fontFamily: "Arial" }}>
-      <div className="dashboard-header" style={{ padding: 0 }}>
+    <div className="main-content">
+      <div className="dashboard-header">
         <h2 className="dashboard-title">📦 Informe de Stock</h2>
-        <div className="top-actions">
-          <button className="btn btn-ghost" onClick={onBack}>🔙 Volver</button>
+        <button className="btn-outline" onClick={onBack}>Volver</button>
+      </div>
+
+      <div className="card card-responsive card-shadow">
+        <div className="form-group">
+          <input
+            type="text"
+            placeholder="Buscar producto, categoría o subcategoría..."
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+            className="input input-full"
+          />
+        </div>
+
+        <div className="form-group">
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <input
+              type="checkbox"
+              checked={filtros.bajo}
+              onChange={(e) => setFiltros({ ...filtros, bajo: e.target.checked })}
+            />
+            <span>Stock bajo</span>
+          </label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginLeft: 16 }}>
+            <input
+              type="checkbox"
+              checked={filtros.sinStock}
+              onChange={(e) => setFiltros({ ...filtros, sinStock: e.target.checked })}
+            />
+            <span>Sin stock</span>
+          </label>
+        </div>
+
+        <div className="table-container">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Categoría</th>
+                <th>Subcategoría</th>
+                <th>Presentación</th>
+                <th>Unidad</th>
+                <th>Mínimo</th>
+                <th>Stock</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtrados.length === 0 && (
+                <tr>
+                  <td colSpan="7" className="muted" style={{ textAlign: 'center', padding: 24 }}>
+                    No hay productos que mostrar
+                  </td>
+                </tr>
+              )}
+              {filtrados.map((i, idx) => (
+                <tr key={idx}>
+                  <td>{i.producto}</td>
+                  <td>{i.categoria}</td>
+                  <td>{i.subcategoria}</td>
+                  <td>{i.presentacion}</td>
+                  <td>{i.unidad}</td>
+                  <td>{i.minimo}</td>
+                  <td>
+                    <span className={`badge ${i.stock === 0 ? 'badge-error' : i.stock <= i.minimo ? 'badge-warning' : 'badge-success'}`}>
+                      {i.stock}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="form-actions">
+          <button onClick={() => setVistaPrevia(true)} className="btn-outline">🖨️ Imprimir</button>
+          <button onClick={previewPDF} className="btn-outline">🔍 Vista previa</button>
+          <button onClick={() => setDownloadOpen(true)} className="btn-outline">⬇️ Descargar</button>
+          <button onClick={enviarCorreo} className="btn-primary">📧 Enviar por correo</button>
         </div>
       </div>
 
-      <input
-        type="text"
-        placeholder="Buscar producto, categoría o subcategoría..."
-        value={busqueda}
-        onChange={(e) => setBusqueda(e.target.value)}
-        style={{ width: "40%", padding: "5px" }}
-      />
-
-      <label style={{ marginLeft: "15px" }}>
-        <input
-          type="checkbox"
-          checked={filtros.bajo}
-          onChange={(e) => setFiltros({ ...filtros, bajo: e.target.checked })}
-        />
-        Stock bajo
-      </label>
-      <label style={{ marginLeft: "15px" }}>
-        <input
-          type="checkbox"
-          checked={filtros.sinStock}
-          onChange={(e) => setFiltros({ ...filtros, sinStock: e.target.checked })}
-        />
-        Sin stock
-      </label>
-
-      <table
-        id="tabla-stock"
-        border="1"
-        cellPadding="6"
-        style={{ width: "100%", marginTop: 10, borderCollapse: "collapse" }}
-      >
-        <thead style={{ background: "#eee" }}>
-          <tr>
-            <th>Producto</th>
-            <th>Categoría</th>
-            <th>Subcategoría</th>
-            <th>Presentación</th>
-            <th>Unidad</th>
-            <th>Mínimo</th>
-            <th>Stock</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filtrados.map((i, idx) => (
-            <tr key={idx}>
-              <td>{i.producto}</td>
-              <td>{i.categoria}</td>
-              <td>{i.subcategoria}</td>
-              <td>{i.presentacion}</td>
-              <td>{i.unidad}</td>
-              <td>{i.minimo}</td>
-              <td
-                style={{
-                  color:
-                    i.stock === 0
-                      ? "red"
-                      : i.stock <= i.minimo
-                      ? "orange"
-                      : "green",
-                }}
-              >
-                {i.stock}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <div style={{ marginTop: 20 }}>
-        <button onClick={() => setVistaPrevia(true)}>🖨️ Imprimir</button>
-        <button onClick={previewPDF} style={{ marginLeft: 10 }}>
-          🔍 Vista previa
-        </button>
-        <button onClick={() => setDownloadOpen(true)} style={{ marginLeft: 10 }}>
-          ⬇️ Descargar
-        </button>
-        <button onClick={enviarCorreo} style={{ marginLeft: 10 }}>
-          📧 Correo
-        </button>
-        <button onClick={onBack} style={{ marginLeft: 10 }}>
-          🔙 Volver
-        </button>
-      </div>
-
       {vistaPrevia && (
-        <div
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === "Escape") setVistaPrevia(false);
-            if (e.key === "Enter") imprimir();
-          }}
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            background: "rgba(0,0,0,0.5)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 999,
-          }}
-        >
-          <div
-            style={{
-              background: "white",
-              padding: 20,
-              borderRadius: 10,
-              textAlign: "center",
-            }}
-          >
-            <h3>Vista previa de impresión</h3>
-            <button onClick={imprimir}>🖨️ Imprimir</button>
-            <button onClick={() => setVistaPrevia(false)} style={{ marginLeft: 10 }}>
-              ❌ Cancelar
-            </button>
-            <div style={{ maxHeight: "60vh", overflowY: "auto", marginTop: 10 }}>
-              <table border="1" cellPadding="6" style={{ width: "100%" }}>
-                <thead style={{ background: "#eee" }}>
-                  <tr>
-                    <th>Producto</th>
-                    <th>Categoría</th>
-                    <th>Subcategoría</th>
-                    <th>Unidad</th>
-                    <th>Stock</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filtrados.map((i, idx) => (
-                    <tr key={idx}>
-                      <td>{i.producto}</td>
-                      <td>{i.categoria}</td>
-                      <td>{i.subcategoria}</td>
-                      <td>{i.unidad}</td>
-                      <td>{i.stock}</td>
+        <div className="app-modal-overlay" onKeyDown={(e) => { if (e.key === "Escape") setVistaPrevia(false); if (e.key === "Enter") imprimir(); }} tabIndex={0}>
+          <div className="app-modal" role="dialog" aria-modal="true">
+            <h3 className="modal-title">Vista previa de impresión</h3>
+            <div className="modal-body">
+              <div className="table-container" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th>Producto</th>
+                      <th>Categoría</th>
+                      <th>Subcategoría</th>
+                      <th>Unidad</th>
+                      <th>Stock</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {filtrados.map((i, idx) => (
+                      <tr key={idx}>
+                        <td>{i.producto}</td>
+                        <td>{i.categoria}</td>
+                        <td>{i.subcategoria}</td>
+                        <td>{i.unidad}</td>
+                        <td>{i.stock}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div className="modal-actions">
+              <button onClick={imprimir} className="btn-primary">🖨️ Imprimir</button>
+              <button onClick={() => setVistaPrevia(false)} className="btn-outline">Cancelar</button>
             </div>
           </div>
         </div>
       )}
+      
       <EmailModal
         open={emailOpen}
         onClose={() => setEmailOpen(false)}
