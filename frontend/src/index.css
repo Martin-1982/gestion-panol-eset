@@ -263,11 +263,13 @@ code {
 .modal-content textarea {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid var(--gray-300);
+  border: 1.5px solid var(--gray-400);
   border-radius: var(--radius-md);
   font-size: 14px;
   transition: all 0.2s ease;
   font-family: inherit;
+  background: #fafbfc;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .modal-content textarea {
@@ -280,7 +282,8 @@ code {
 .modal-content textarea:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px var(--primary-light);
+  background: white;
+  box-shadow: 0 0 0 3px var(--primary-light), 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .modal-content .form-row {
@@ -441,28 +444,34 @@ input[type="text"],
 input[type="email"],
 input[type="password"],
 input[type="number"],
+input[type="date"],
 input[type="search"],
-select {
+select,
+textarea {
   padding: 10px 12px;
-  border: 1px solid var(--gray-300);
+  border: 1.5px solid var(--gray-400);
   border-radius: var(--radius-md);
   font-size: 14px;
   font-family: inherit;
   transition: all 0.2s ease;
-  background: white;
+  background: #fafbfc;
   color: var(--gray-900);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .input:focus,
 input:focus,
-select:focus {
+select:focus,
+textarea:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px var(--primary-light);
+  background: white;
+  box-shadow: 0 0 0 3px var(--primary-light), 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .input::placeholder,
-input::placeholder {
+input::placeholder,
+textarea::placeholder {
   color: var(--gray-500);
 }
 
@@ -504,59 +513,138 @@ input::placeholder {
 /* Menu grid for admin dashboard */
 .menu-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  column-gap: 10px; /* separación horizontal un poquito mayor */
-  row-gap: 16px; /* separación vertical un poquito mayor */
-  max-width: 202px; /* 2 * 96px + 10px gap = 202px */
-  margin: 4px auto 0 auto; /* acercar la cuadricula al header */
-  justify-items: center;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+  max-width: 900px;
+  margin: 80px auto 0 auto;
+  padding: 0 20px;
 }
+
 .menu-btn {
-  background: linear-gradient(180deg, #ffb87a, #ff8a1f); /* orange */
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
   color: white;
   border: none;
-  border-radius: 8px;
-  aspect-ratio: 1 / 1; /* force square */
-  width: 96px; /* un poco más anchos para que el nombre quepa mejor */
-  justify-self: center;
+  border-radius: 12px;
+  min-height: 120px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 14px;
-  box-shadow: 0 8px 0 rgba(255,138,31,0.22), 0 3px 8px rgba(17,17,18,0.06);
-  transition: transform 140ms ease, box-shadow 140ms ease;
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+  transition: all 0.25s ease;
   cursor: pointer;
-  padding: 8px; /* un poco más de padding para la etiqueta */
+  padding: 16px 12px;
+  position: relative;
+  overflow: hidden;
 }
+
+/* Efecto de brillo sutil */
+.menu-btn::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  bottom: -50%;
+  left: -50%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.1) 0%, transparent 100%);
+  transform: rotate(30deg);
+  pointer-events: none;
+}
+
 .menu-btn .icon {
-  font-size: 22px; /* icono un poco más grande */
-  margin-bottom: 6px; /* espacio entre icono y etiqueta */
+  font-size: 40px;
+  margin-bottom: 8px;
   display: block;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15));
 }
-.menu-btn .label { font-size: 14px; line-height: 1.05; text-align: center; }
+
+.menu-btn .label { 
+  font-size: 14px; 
+  line-height: 1.3; 
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  font-weight: 600;
+}
+
 .menu-btn:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 14px 0 rgba(255,138,31,0.18), 0 8px 16px rgba(17,17,18,0.12);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(255, 107, 53, 0.4);
 }
+
 .menu-btn:active {
-  transform: translateY(2px);
-  box-shadow: 0 5px 0 rgba(255,138,31,0.12), 0 2px 6px rgba(17,17,18,0.08);
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
 }
-@keyframes pulse {
-  0% { box-shadow: 0 8px 0 rgba(255,138,31,0.18); }
-  50% { box-shadow: 0 12px 0 rgba(255,138,31,0.14); }
-  100% { box-shadow: 0 8px 0 rgba(255,138,31,0.18); }
+
+/* Variaciones de color naranja para cada botón */
+.menu-btn:nth-child(1) {
+  background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
 }
-.menu-btn.pulse { animation: pulse 2.2s infinite; }
 
-/* center the 5th button on a new row without changing its width */
-.menu-btn.informes { grid-column: 1 / -1; justify-self: center; }
+.menu-btn:nth-child(2) {
+  background: linear-gradient(135deg, #f7931e 0%, #ffad33 100%);
+}
 
-@media (max-width: 520px) {
-  .menu-grid { grid-template-columns: repeat(2, 1fr); }
-  .menu-btn { width: 86px; font-size: 13px; }
+.menu-btn:nth-child(3) {
+  background: linear-gradient(135deg, #ff7849 0%, #ff9a5a 100%);
+}
+
+.menu-btn:nth-child(4) {
+  background: linear-gradient(135deg, #ff8c42 0%, #ffa45c 100%);
+}
+
+.menu-btn:nth-child(5) {
+  background: linear-gradient(135deg, #f7941d 0%, #fdb750 100%);
+}
+
+/* Responsive */
+@media (min-width: 769px) {
+  .menu-grid {
+    grid-template-columns: repeat(5, 1fr);
+    max-width: 850px;
+  }
+  .menu-btn {
+    min-height: 130px;
+  }
+}
+
+@media (max-width: 768px) and (min-width: 481px) {
+  .menu-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .menu-btn {
+    min-height: 110px;
+    padding: 14px 10px;
+  }
+  .menu-btn .icon {
+    font-size: 36px;
+    margin-bottom: 6px;
+  }
+  .menu-btn .label {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .menu-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 20px;
+  }
+  .menu-btn {
+    min-height: 100px;
+    padding: 12px 8px;
+  }
+  .menu-btn .icon {
+    font-size: 32px;
+    margin-bottom: 6px;
+  }
+  .menu-btn .label {
+    font-size: 12px;
+  }
 }
 
 .login-top-title {
@@ -844,4 +932,49 @@ input::placeholder {
 
 .input-full {
   width: 100%;
+}
+
+/* ========================================
+   CHECKBOX PERSONALIZADO
+   ======================================== */
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--primary);
+  border: 1.5px solid var(--gray-400);
+  border-radius: 4px;
+}
+
+/* Contenedor de checkbox con label */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: #fafbfc;
+  border: 1.5px solid var(--gray-400);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  margin-bottom: 8px;
+}
+
+.checkbox-container:hover {
+  background: #f0f4f8;
+  border-color: var(--primary);
+}
+
+.checkbox-container input[type="checkbox"] {
+  margin: 0;
+}
+
+.checkbox-container label {
+  margin: 0 !important;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--gray-800);
+  user-select: none;
 }

@@ -168,8 +168,8 @@ export default function Entrada({ onBack }) {
         )}
 
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-          <h2 style={{ margin: 0, fontSize: '24px', color: 'var(--primary)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+          <h2 style={{ margin: 0, fontSize: '22px', color: 'var(--primary)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span>📥</span>
             <span>Registrar Entrada</span>
           </h2>
@@ -177,17 +177,17 @@ export default function Entrada({ onBack }) {
         </div>
 
         <form onSubmit={handleSubmit} autoComplete="off">
-          <div className="form-grid">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px', marginBottom: '20px' }}>
             
             {/* Producto */}
             <div>
-              <label>Producto *</label>
+              <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600, color: 'var(--gray-700)' }}>Producto *</label>
               <div style={{ display: 'flex', gap: '8px' }}>
                 <div style={{ flex: 1, position: 'relative' }}>
                   <input
                     ref={productInputRef}
                     type="text"
-                    placeholder="Buscar producto..."
+                    placeholder="Buscar..."
                     value={productQuery}
                     onChange={(e) => { setProductQuery(e.target.value); setShowSuggestions(true); setHighlightedIndex(-1); setFormData(prev => ({ ...prev, producto_id: '' })); }}
                     onFocus={() => setShowSuggestions(true)}
@@ -197,6 +197,7 @@ export default function Entrada({ onBack }) {
                       else if (e.key === 'Enter') { e.preventDefault(); if (highlightedIndex >= 0 && filteredProducts[highlightedIndex]) { const sel = filteredProducts[highlightedIndex]; setFormData(prev => ({ ...prev, producto_id: sel.id })); setProductQuery(sel.nombre); setShowSuggestions(false); } }
                       else if (e.key === 'Escape') { setShowSuggestions(false); }
                     }}
+                    style={{ width: '100%', padding: '8px 10px', fontSize: '14px' }}
                   />
                   {showSuggestions && productQuery !== '' && (
                     <div className="autocomplete-list">
@@ -207,25 +208,25 @@ export default function Entrada({ onBack }) {
                     </div>
                   )}
                 </div>
-                <button type="button" onClick={() => { setShowAddProducto(true); setTimeout(() => newProdNombreRef.current && newProdNombreRef.current.focus(), 60); }} className="btn-icon" aria-label="Agregar producto">➕</button>
+                <button type="button" onClick={() => { setShowAddProducto(true); setTimeout(() => newProdNombreRef.current && newProdNombreRef.current.focus(), 60); }} className="btn-icon" style={{ width: '36px', height: '36px', fontSize: '16px' }} aria-label="Agregar producto">+</button>
               </div>
             </div>
 
             {/* Cantidad */}
             <div>
-              <label>Cantidad *</label>
-              <input name="cantidad" value={formData.cantidad} onChange={handleChange} type="number" min="0" />
+              <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600, color: 'var(--gray-700)' }}>Cantidad *</label>
+              <input name="cantidad" value={formData.cantidad} onChange={handleChange} type="number" min="0" style={{ width: '100%', padding: '8px 10px', fontSize: '14px' }} />
             </div>
 
             {/* Proveedor */}
             <div>
-              <label>Proveedor</label>
+              <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600, color: 'var(--gray-700)' }}>Proveedor</label>
               <div style={{ display: 'flex', gap: '8px' }}>
                 <div style={{ flex: 1, position: 'relative' }}>
                   <input
                     ref={providerInputRef}
                     type="text"
-                    placeholder="Buscar proveedor..."
+                    placeholder="Buscar..."
                     value={providerQuery}
                     onChange={(e) => { setProviderQuery(e.target.value); setShowProvSuggestions(true); setProvHighlightedIndex(-1); setFormData(prev => ({ ...prev, proveedor_id: '' })); }}
                     onFocus={() => setShowProvSuggestions(true)}
@@ -236,6 +237,7 @@ export default function Entrada({ onBack }) {
                       else if (e.key === 'Escape') { setShowProvSuggestions(false); }
                     }}
                     disabled={formData.donacion}
+                    style={{ width: '100%', padding: '8px 10px', fontSize: '14px' }}
                   />
                   {showProvSuggestions && providerQuery !== '' && !formData.donacion && (
                     <div className="autocomplete-list">
@@ -246,37 +248,43 @@ export default function Entrada({ onBack }) {
                     </div>
                   )}
                 </div>
-                <button type="button" onClick={() => { setShowAddProveedor(true); setTimeout(() => proveedorNombreRef.current && proveedorNombreRef.current.focus(), 60); }} className="btn-icon" aria-label="Agregar proveedor" disabled={formData.donacion}>➕</button>
+                <button type="button" onClick={() => { setShowAddProveedor(true); setTimeout(() => proveedorNombreRef.current && proveedorNombreRef.current.focus(), 60); }} className="btn-icon" style={{ width: '36px', height: '36px', fontSize: '16px' }} aria-label="Agregar proveedor" disabled={formData.donacion}>+</button>
               </div>
             </div>
 
             {/* Costo */}
             <div>
-              <label>Costo</label>
-              <input name="costo" value={formData.costo} onChange={handleChange} type="number" step="0.01" min="0" disabled={formData.donacion} />
+              <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600, color: 'var(--gray-700)' }}>Costo</label>
+              <input name="costo" value={formData.costo} onChange={handleChange} type="number" step="0.01" min="0" disabled={formData.donacion} style={{ width: '100%', padding: '8px 10px', fontSize: '14px' }} />
             </div>
 
             {/* Fecha de vencimiento */}
             <div>
-              <label>Fecha de Vencimiento</label>
-              <input name="fechaVencimiento" value={formData.fechaVencimiento} onChange={handleChange} type="date" />
+              <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600, color: 'var(--gray-700)' }}>Vencimiento</label>
+              <input name="fechaVencimiento" value={formData.fechaVencimiento} onChange={handleChange} type="date" style={{ width: '100%', padding: '8px 10px', fontSize: '14px' }} />
             </div>
 
-            {/* Donación - ocupa 2 columnas en pantallas grandes */}
-            <div style={{ gridColumn: 'span 2' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                <input type="checkbox" name="donacion" checked={formData.donacion} onChange={handleChange} />
+            {/* Donación */}
+            <div>
+              <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600, color: 'var(--gray-700)' }}>Donación</label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 12px', cursor: 'pointer', background: '#fafbfc', border: '1.5px solid var(--gray-400)', borderRadius: 'var(--radius-md)', fontSize: '14px' }}>
+                <input type="checkbox" name="donacion" checked={formData.donacion} onChange={handleChange} style={{ width: '18px', height: '18px', cursor: 'pointer' }} />
                 <span>Es donación</span>
               </label>
-              {formData.donacion && (
-                <input name="procedenciaDonacion" value={formData.procedenciaDonacion} onChange={handleChange} type="text" placeholder="Procedencia de la donación" style={{ marginTop: '8px' }} />
-              )}
             </div>
+
+            {/* Procedencia (solo si es donación) */}
+            {formData.donacion && (
+              <div style={{ gridColumn: 'span 2' }}>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600, color: 'var(--gray-700)' }}>Procedencia</label>
+                <input name="procedenciaDonacion" value={formData.procedenciaDonacion} onChange={handleChange} type="text" placeholder="Procedencia de la donación" style={{ width: '100%', padding: '8px 10px', fontSize: '14px' }} />
+              </div>
+            )}
           </div>
 
-          <div className="form-actions">
+          <div style={{ borderTop: '1px solid var(--gray-200)', paddingTop: '16px', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
             <button type="button" onClick={onBack} className="btn-outline">Cancelar</button>
-            <button type="submit" className="btn-primary">Guardar Entrada</button>
+            <button type="submit" className="btn-primary">💾 Guardar Entrada</button>
           </div>
         </form>
       </div>
@@ -286,21 +294,21 @@ export default function Entrada({ onBack }) {
       {showAddProducto && (
         <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) { setShowAddProducto(false); setNewProducto({ nombre: '', tipo: '', presentacion: '', unidad: '', minimo: '', unidadCustom: '', categoria: '', subcategoria: '' }); setCategoriaSuggestions([]); setSubcategoriaSuggestions([]); } }}>
           <div className="modal-content" role="dialog" aria-modal="true">
-            <h3>➕ Nuevo Producto</h3>
+            <h3>Nuevo producto</h3>
             
-            <label>Nombre *</label>
-            <input ref={newProdNombreRef} type="text" value={newProducto.nombre} onChange={(e) => setNewProducto({ ...newProducto, nombre: e.target.value })} />
+            <label>Nombre</label>
+            <input ref={newProdNombreRef} placeholder="Nombre del producto" value={newProducto.nombre} onChange={(e) => setNewProducto({ ...newProducto, nombre: e.target.value })} />
             
             <label>Tipo</label>
             <select value={newProducto.tipo} onChange={(e) => setNewProducto({ ...newProducto, tipo: e.target.value })}>
-              <option value="">-- Seleccionar --</option>
+              <option value="">-- Tipo --</option>
               <option value="uso">Uso</option>
               <option value="consumo">Consumo</option>
             </select>
             
             <label>Categoría</label>
             <div style={{ position: 'relative' }}>
-              <input ref={newProdCategoriaRef} type="text" value={newProducto.categoria || ''} onChange={(e) => { const v = e.target.value; setNewProducto({ ...newProducto, categoria: v }); const s = categorias.filter(c => c.toLowerCase().includes((v || "").toLowerCase())); setCategoriaSuggestions(s); setCategoriaHighlightedIndex(-1); }} onKeyDown={(e) => {
+              <input ref={newProdCategoriaRef} placeholder="Categoría" value={newProducto.categoria || ''} onChange={(e) => { const v = e.target.value; setNewProducto({ ...newProducto, categoria: v }); const s = categorias.filter(c => c.toLowerCase().includes((v || "").toLowerCase())); setCategoriaSuggestions(s); setCategoriaHighlightedIndex(-1); }} onKeyDown={(e) => {
                 const list = categoriaSuggestions;
                 if (e.key === 'ArrowDown') { e.preventDefault(); setCategoriaHighlightedIndex(i => Math.min(i + 1, list.length - 1)); }
                 else if (e.key === 'ArrowUp') { e.preventDefault(); setCategoriaHighlightedIndex(i => Math.max(i - 1, 0)); }
@@ -308,15 +316,15 @@ export default function Entrada({ onBack }) {
                 else if (e.key === 'Escape') { setCategoriaSuggestions([]); setCategoriaHighlightedIndex(-1); }
               }} />
               {categoriaSuggestions.length > 0 && (
-                <ul className="autocomplete-list">
-                  {categoriaSuggestions.map((c, i) => (<li key={i} className={`autocomplete-item${i === categoriaHighlightedIndex ? ' active' : ''}`} onMouseDown={(ev) => ev.preventDefault()} onClick={() => { setNewProducto({ ...newProducto, categoria: c }); setCategoriaSuggestions([]); setCategoriaHighlightedIndex(-1); }}>{c}</li>))}
+                <ul style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#fff', border: '1px solid #ccc', listStyle: 'none', padding: 0, margin: 0, maxHeight: '140px', overflowY: 'auto', zIndex: 2000 }}>
+                  {categoriaSuggestions.map((c, i) => (<li key={i} style={{ padding: '8px', cursor: 'pointer', borderBottom: '1px solid #eee', background: i === categoriaHighlightedIndex ? '#f0f0f0' : 'white' }} onMouseDown={(ev) => ev.preventDefault()} onClick={() => { setNewProducto({ ...newProducto, categoria: c }); setCategoriaSuggestions([]); setCategoriaHighlightedIndex(-1); }}>{c}</li>))}
                 </ul>
               )}
             </div>
             
             <label>Subcategoría</label>
             <div style={{ position: 'relative' }}>
-              <input ref={newProdSubcategoriaRef} type="text" value={newProducto.subcategoria || ''} onChange={(e) => { const v = e.target.value; setNewProducto({ ...newProducto, subcategoria: v }); const s = subcategorias.filter(su => su.toLowerCase().includes((v || "").toLowerCase())); setSubcategoriaSuggestions(s); setSubcategoriaHighlightedIndex(-1); }} onKeyDown={(e) => {
+              <input ref={newProdSubcategoriaRef} placeholder="Subcategoría" value={newProducto.subcategoria || ''} onChange={(e) => { const v = e.target.value; setNewProducto({ ...newProducto, subcategoria: v }); const s = subcategorias.filter(su => su.toLowerCase().includes((v || "").toLowerCase())); setSubcategoriaSuggestions(s); setSubcategoriaHighlightedIndex(-1); }} onKeyDown={(e) => {
                 const list = subcategoriaSuggestions;
                 if (e.key === 'ArrowDown') { e.preventDefault(); setSubcategoriaHighlightedIndex(i => Math.min(i + 1, list.length - 1)); }
                 else if (e.key === 'ArrowUp') { e.preventDefault(); setSubcategoriaHighlightedIndex(i => Math.max(i - 1, 0)); }
@@ -324,42 +332,24 @@ export default function Entrada({ onBack }) {
                 else if (e.key === 'Escape') { setSubcategoriaSuggestions([]); setSubcategoriaHighlightedIndex(-1); }
               }} />
               {subcategoriaSuggestions.length > 0 && (
-                <ul className="autocomplete-list">
-                  {subcategoriaSuggestions.map((s, i) => (<li key={i} className={`autocomplete-item${i === subcategoriaHighlightedIndex ? ' active' : ''}`} onMouseDown={(ev) => ev.preventDefault()} onClick={() => { setNewProducto({ ...newProducto, subcategoria: s }); setSubcategoriaSuggestions([]); setSubcategoriaHighlightedIndex(-1); }}>{s}</li>))}
+                <ul style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#fff', border: '1px solid #ccc', listStyle: 'none', padding: 0, margin: 0, maxHeight: '140px', overflowY: 'auto', zIndex: 2000 }}>
+                  {subcategoriaSuggestions.map((s, i) => (<li key={i} style={{ padding: '8px', cursor: 'pointer', borderBottom: '1px solid #eee', background: i === subcategoriaHighlightedIndex ? '#f0f0f0' : 'white' }} onMouseDown={(ev) => ev.preventDefault()} onClick={() => { setNewProducto({ ...newProducto, subcategoria: s }); setSubcategoriaSuggestions([]); setSubcategoriaHighlightedIndex(-1); }}>{s}</li>))}
                 </ul>
               )}
             </div>
             
             <label>Presentación</label>
-            <input type="text" value={newProducto.presentacion} onChange={(e) => setNewProducto({ ...newProducto, presentacion: e.target.value })} />
+            <input placeholder="Ej: Caja, Bolsa, Litro" value={newProducto.presentacion} onChange={(e) => setNewProducto({ ...newProducto, presentacion: e.target.value })} />
             
             <label>Unidad</label>
-            <select value={newProducto.unidad || ""} onChange={(e) => setNewProducto({ ...newProducto, unidad: e.target.value })}>
-              <option value="">-- Seleccionar --</option>
-              <option value="unidad">Unidad</option>
-              <option value="kg">Kg</option>
-              <option value="g">Gr</option>
-              <option value="lt">Litro</option>
-              <option value="caja">Caja</option>
-              <option value="cajon">Cajón</option>
-              <option value="pack">Pack</option>
-              <option value="paquete">Paquete</option>
-              <option value="otro">Otro</option>
-            </select>
-            
-            {newProducto.unidad === 'otro' && (
-              <>
-                <label>Especificar Unidad</label>
-                <input type="text" value={newProducto.unidadCustom || ''} onChange={(e) => setNewProducto({ ...newProducto, unidadCustom: e.target.value })} />
-              </>
-            )}
+            <input placeholder="Ej: kg, litros, unidades" value={newProducto.unidad || ''} onChange={(e) => setNewProducto({ ...newProducto, unidad: e.target.value })} />
             
             <label>Stock Mínimo</label>
-            <input type="number" min="0" value={newProducto.minimo} onChange={(e) => setNewProducto({ ...newProducto, minimo: e.target.value })} />
+            <input type="number" placeholder="0" min="0" value={newProducto.minimo} onChange={(e) => setNewProducto({ ...newProducto, minimo: e.target.value })} />
             
             <div className="form-actions">
               <button type="button" onClick={() => { setShowAddProducto(false); setNewProducto({ nombre: '', tipo: '', presentacion: '', unidad: '', minimo: '', unidadCustom: '', categoria: '', subcategoria: '' }); setCategoriaSuggestions([]); setSubcategoriaSuggestions([]); setCategoriaHighlightedIndex(-1); setSubcategoriaHighlightedIndex(-1); }} className="btn-outline">Cancelar</button>
-              <button type="button" onClick={handleAddProducto} className="btn-primary">Guardar</button>
+              <button type="button" onClick={handleAddProducto} className="btn-primary">💾 Guardar</button>
             </div>
           </div>
         </div>
@@ -368,26 +358,26 @@ export default function Entrada({ onBack }) {
       {showAddProveedor && (
         <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) { setShowAddProveedor(false); setNewProveedor({ nombre: '', direccion: '', telefono: '', email: '', contacto: '' }); } }}>
           <div className="modal-content" role="dialog" aria-modal="true">
-            <h3>➕ Nuevo Proveedor</h3>
+            <h3>Nuevo proveedor</h3>
             
-            <label>Nombre *</label>
-            <input ref={proveedorNombreRef} type="text" value={newProveedor.nombre} onChange={(e) => setNewProveedor({ ...newProveedor, nombre: e.target.value })} />
+            <label>Nombre del proveedor</label>
+            <input ref={proveedorNombreRef} placeholder="Nombre" value={newProveedor.nombre} onChange={(e) => setNewProveedor({ ...newProveedor, nombre: e.target.value })} />
             
-            <label>Dirección</label>
-            <input type="text" value={newProveedor.direccion} onChange={(e) => setNewProveedor({ ...newProveedor, direccion: e.target.value })} />
+            <label>Persona de contacto</label>
+            <input placeholder="Nombre del contacto" value={newProveedor.contacto} onChange={(e) => setNewProveedor({ ...newProveedor, contacto: e.target.value })} />
             
             <label>Teléfono</label>
-            <input type="text" value={newProveedor.telefono} onChange={(e) => setNewProveedor({ ...newProveedor, telefono: e.target.value })} />
+            <input placeholder="Número de teléfono" value={newProveedor.telefono} onChange={(e) => setNewProveedor({ ...newProveedor, telefono: e.target.value })} />
+            
+            <label>Dirección</label>
+            <input placeholder="Dirección completa" value={newProveedor.direccion} onChange={(e) => setNewProveedor({ ...newProveedor, direccion: e.target.value })} />
             
             <label>Email</label>
-            <input type="email" value={newProveedor.email} onChange={(e) => setNewProveedor({ ...newProveedor, email: e.target.value })} />
-            
-            <label>Contacto</label>
-            <input type="text" value={newProveedor.contacto} onChange={(e) => setNewProveedor({ ...newProveedor, contacto: e.target.value })} />
+            <input type="email" placeholder="correo@ejemplo.com" value={newProveedor.email} onChange={(e) => setNewProveedor({ ...newProveedor, email: e.target.value })} />
             
             <div className="form-actions">
               <button type="button" onClick={() => { setShowAddProveedor(false); setNewProveedor({ nombre: '', direccion: '', telefono: '', email: '', contacto: '' }); }} className="btn-outline">Cancelar</button>
-              <button type="button" onClick={handleAddProveedor} className="btn-primary">Guardar</button>
+              <button type="button" onClick={handleAddProveedor} className="btn-primary">💾 Guardar</button>
             </div>
           </div>
         </div>

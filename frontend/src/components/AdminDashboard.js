@@ -7,7 +7,27 @@ import Proveedores from "./Proveedores";
 
 export default function AdminDashboard() {
   const [activePage, setActivePage] = useState("menu");
-  const role = localStorage.getItem('role') || 'Usuario';
+  
+  // Obtener el nombre del rol - puede venir como nombre o como ID
+  const getRoleName = () => {
+    const roleFromStorage = localStorage.getItem('role') || '1';
+    
+    // Si ya es un nombre (no es número), devolverlo
+    if (isNaN(roleFromStorage)) {
+      return roleFromStorage;
+    }
+    
+    // Si es un número, mapear a nombre
+    const roleMap = {
+      '1': 'Administrador',
+      '2': 'Usuario',
+      '3': 'Invitado'
+    };
+    
+    return roleMap[roleFromStorage] || 'Usuario';
+  };
+  
+  const role = getRoleName();
 
   const handleLogout = () => {
     // clear local session info and go to root (login)
@@ -37,23 +57,23 @@ export default function AdminDashboard() {
                 </div>
               </div>
               <div className="menu-grid">
-                <button className="menu-btn pulse orange" onClick={() => setActivePage("productos")} aria-label="Productos">
+                <button className="menu-btn" onClick={() => setActivePage("productos")} aria-label="Productos">
                   <span className="icon">📦</span>
                   <span className="label">Productos</span>
                 </button>
-                <button className="menu-btn pulse orange" onClick={() => setActivePage("proveedores")} aria-label="Proveedores">
+                <button className="menu-btn" onClick={() => setActivePage("proveedores")} aria-label="Proveedores">
                   <span className="icon">🏢</span>
                   <span className="label">Proveedores</span>
                 </button>
-                <button className="menu-btn pulse orange" onClick={() => setActivePage("entradas")} aria-label="Entradas">
-                  <span className="icon">⬇️</span>
+                <button className="menu-btn" onClick={() => setActivePage("entradas")} aria-label="Entradas">
+                  <span className="icon">📥</span>
                   <span className="label">Entradas</span>
                 </button>
-                <button className="menu-btn pulse orange" onClick={() => setActivePage("salidas")} aria-label="Salidas">
-                  <span className="icon">⬆️</span>
+                <button className="menu-btn" onClick={() => setActivePage("salidas")} aria-label="Salidas">
+                  <span className="icon">📤</span>
                   <span className="label">Salidas</span>
                 </button>
-                <button className="menu-btn pulse orange informes" onClick={() => setActivePage("informes")} aria-label="Informes">
+                <button className="menu-btn" onClick={() => setActivePage("informes")} aria-label="Informes">
                   <span className="icon">📊</span>
                   <span className="label">Informes</span>
                 </button>

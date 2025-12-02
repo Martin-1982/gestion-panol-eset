@@ -28,7 +28,9 @@ export default function Login({ setPantalla, openRegister, registrationMessage, 
       localStorage.setItem("token", res.data.token);
       if (res.data.user) {
         localStorage.setItem('user', JSON.stringify(res.data.user));
-        localStorage.setItem('role', res.data.user.rol_id || 'Usuario');
+        // Guardar el nombre del rol en lugar del ID
+        const roleName = res.data.user.rol_nombre || res.data.user.rol || 'Usuario';
+        localStorage.setItem('role', roleName);
       }
       setPantalla("menu");
     } catch (err) {
