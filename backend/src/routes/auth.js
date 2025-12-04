@@ -51,7 +51,7 @@ router.post("/register", async (req, res) => {
     console.log('>>> /register: insert OK for', email);
 
     // enviar email con SendGrid
-    const verifyUrl = `http://localhost:4000/api/auth/verify/${verificationToken}`;
+    const verifyUrl = `${process.env.BACKEND_URL || 'http://localhost:4000'}/api/auth/verify/${verificationToken}`;
     if (process.env.SENDGRID_API_KEY) {
         // Determinar remitente: usar SENDGRID_FROM (si existe) o el par SENDGRID_FROM_EMAIL/SENDGRID_FROM_NAME
         const fromField = process.env.SENDGRID_FROM
@@ -296,7 +296,7 @@ router.post('/resend', async (req, res) => {
 
     await pool.query('UPDATE usuarios SET verification_token_hash=$1, verification_expires=$2, estado=$3 WHERE id=$4', [tokenHash, expiresAt, 'pendiente', user.id]);
 
-    const verifyUrl = `http://localhost:4000/api/auth/verify/${verificationToken}`;
+    const verifyUrl = `${process.env.BACKEND_URL || 'http://localhost:4000'}/api/auth/verify/${verificationToken}`;
     if (process.env.SENDGRID_API_KEY) {
         // Determinar remitente: usar SENDGRID_FROM (si existe) o el par SENDGRID_FROM_EMAIL/SENDGRID_FROM_NAME
         const fromField = process.env.SENDGRID_FROM

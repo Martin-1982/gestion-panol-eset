@@ -1257,3 +1257,74 @@ input[type="checkbox"] {
   color: var(--gray-800);
   user-select: none;
 }
+
+/* ========================================
+   RESPONSIVE GLOBAL - MOBILE
+   ======================================== */
+@media (max-width: 768px) {
+  /* Tablas responsive */
+  table {
+    font-size: 13px;
+  }
+  
+  table th,
+  table td {
+    padding: 10px 8px;
+  }
+  
+  /* Botones de acción en tablas más pequeños */
+  table button {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  
+  /* Formularios */
+  .form-row {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+  }
+  
+  /* Dashboard header */
+  .dashboard-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  
+  .dashboard-title {
+    font-size: 20px;
+  }
+  
+  /* Botones de acciones superiores */
+  .top-actions {
+    width: 100%;
+  }
+  
+  .top-actions button {
+    width: 100%;
+  }
+  
+  /* Contenido principal con menos padding */
+  .main-content {
+    padding: 16px;
+  }
+  
+  /* Inputs y selects más espaciosos en mobile */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="date"],
+  select,
+  textarea {
+    font-size: 16px; /* Evita zoom en iOS */
+    min-height: 44px; /* Touch-friendly */
+  }
+  
+  /* Botones touch-friendly */
+  .btn,
+  .btn-outline {
+    min-height: 44px;
+    padding: 12px 20px;
+  }
+}
