@@ -994,7 +994,7 @@ textarea::placeholder {
   }
   
   .header-left img {
-    height: 32px; /* Logo más pequeño */
+    height: 28px; /* Logo más compacto */
   }
   
   .header-right {
@@ -1013,12 +1013,12 @@ textarea::placeholder {
   }
   
   .header-panol .big {
-    font-size: 11px;
+    font-size: 13px; /* Aumentado de 11px a 13px */
     line-height: 1.2;
   }
   
   .header-panol .small {
-    font-size: 8px;
+    font-size: 10px; /* Aumentado de 8px a 10px */
     line-height: 1.2;
   }
   
@@ -1057,9 +1057,9 @@ textarea::placeholder {
 
 @media (max-width: 520px) {
   .site-header { padding: 4px 10px; }
-  .header-left img { height: 28px; } /* Logo aún más compacto */
-  .header-panol .big { font-size: 10px; }
-  .header-panol .small { font-size: 7px; }
+  .header-left img { height: 24px; } /* Logo aún más compacto */
+  .header-panol .big { font-size: 12px; } /* Texto un poco más grande */
+  .header-panol .small { font-size: 9px; } /* Texto un poco más grande */
   .login-card { width: 94%; margin-top: -6px; }
   .page-login { padding-top: 4px; }
   .main-title { margin-top: -24px; margin-bottom: 6px; font-size: 24px; }
