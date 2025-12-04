@@ -987,25 +987,25 @@ textarea::placeholder {
     grid-template-columns: 1fr;
   }
   
-  /* Header optimizado para móvil vertical */
+  /* Header ultra-compacto para móvil vertical */
   .site-header {
-    padding: 8px 16px;
-    flex-wrap: wrap;
-    gap: 8px;
+    padding: 6px 12px;
+    min-height: auto;
   }
   
   .header-left img {
-    height: 40px;
+    height: 32px; /* Logo más pequeño */
   }
   
   .header-right {
     flex-direction: column;
     align-items: flex-end;
-    gap: 4px;
+    gap: 2px;
+    justify-content: center;
   }
   
   .header-bar {
-    display: none; /* Ocultar barra vertical en móvil */
+    display: none; /* Ocultar barra en móvil */
   }
   
   .header-panol {
@@ -1013,24 +1013,65 @@ textarea::placeholder {
   }
   
   .header-panol .big {
-    font-size: 13px;
+    font-size: 11px;
+    line-height: 1.2;
   }
   
   .header-panol .small {
-    font-size: 10px;
+    font-size: 8px;
+    line-height: 1.2;
+  }
+  
+  /* Optimizar menús para móvil - 1 columna, botones horizontales */
+  .page-recursos .menu-grid,
+  .page-informes .menu-grid {
+    grid-template-columns: 1fr !important;
+    max-width: 100%;
+    gap: 12px;
+    padding: 0 16px;
+  }
+  
+  .page-recursos .menu-btn,
+  .page-informes .menu-btn {
+    min-height: 80px !important; /* Más bajo = horizontal */
+    max-width: 100% !important;
+    width: 100%;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 16px;
+    padding: 12px 20px !important;
+  }
+  
+  .page-recursos .menu-btn .icon,
+  .page-informes .menu-btn .icon {
+    font-size: 32px !important;
+    margin-bottom: 0;
+  }
+  
+  .page-recursos .menu-btn .label,
+  .page-informes .menu-btn .label {
+    font-size: 15px;
+    text-align: left;
   }
 }
 
 @media (max-width: 520px) {
-  .site-header { padding: 6px 12px; }
-  .header-left img { height: 36px; }
-  .header-panol .big { font-size: 12px; }
-  .header-panol .small { font-size: 9px; }
+  .site-header { padding: 4px 10px; }
+  .header-left img { height: 28px; } /* Logo aún más compacto */
+  .header-panol .big { font-size: 10px; }
+  .header-panol .small { font-size: 7px; }
   .login-card { width: 94%; margin-top: -6px; }
   .page-login { padding-top: 4px; }
   .main-title { margin-top: -24px; margin-bottom: 6px; font-size: 24px; }
   .dashboard-header { padding: 0 16px; }
   .dashboard-title { font-size: 18px; }
+  
+  /* Botones aún más compactos en pantallas pequeñas */
+  .page-recursos .menu-btn,
+  .page-informes .menu-btn {
+    padding: 10px 16px !important;
+    min-height: 70px !important;
+  }
 }
 
 /* ensure header stays above other content */
