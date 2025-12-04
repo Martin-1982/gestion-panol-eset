@@ -245,6 +245,15 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ error: "Contraseña incorrecta" });
     }
 
+    // Obtener el nombre del rol desde la tabla roles
+    let rol_nombre = 'Sin rol';
+    if (user.rol_id) {
+      const rolResult = await pool.query("SELECT nombre FROM roles WHERE id = $1", [user.rol_id]);
+      if (rolResult.rows.length > 0) {
+        rol_nombre = rolResult.rows[0].nombre;
+      }
+    }
+
     // generar JWT
     const token = jwt.sign(
       { id: user.id, rol_id: user.rol_id, funcion_id: user.funcion_id },
@@ -252,8 +261,17 @@ router.post("/login", async (req, res) => {
       { expiresIn: "8h" }
     );
 
-    console.log('✅ Login exitoso:', { email, id: user.id });
-    res.json({ token, user: { id: user.id, nombre: user.nombre, apellido: user.apellido, rol_id: user.rol_id } });
+    console.log('✅ Login exitoso:', { email, id: user.id, rol: rol_nombre });
+    res.json({ 
+      token, 
+      user: { 
+        id: user.id, 
+        nombre: user.nombre, 
+        apellido: user.apellido, 
+        rol_id: user.rol_id,
+        rol_nombre: rol_nombre
+      } 
+    });
   } catch (err) {
     console.error("❌ Error en /login:", err.message);
     res.status(500).json({ error: "Error en el servidor" });
@@ -326,7 +344,7 @@ router.post('/password-reset-request', async (req, res) => {
 
     await pool.query('UPDATE usuarios SET password_reset_token_hash=$1, password_reset_expires=$2 WHERE id=$3', [tokenHash, expiresAt, user.id]);
 
-    const resetUrl = `http://localhost:4000/api/auth/reset/${resetToken}`;
+  const resetUrl = `${process.env.BACKEND_URL || 'http://localhost:4000'}/api/auth/reset/${resetToken}`;
     if (process.env.SENDGRID_API_KEY) {
       const fromField = process.env.SENDGRID_FROM
         ? process.env.SENDGRID_FROM

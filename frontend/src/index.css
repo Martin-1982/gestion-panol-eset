@@ -1,3 +1,119 @@
+/* Estilos por defecto para botones del menú principal (cuadrados) */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  max-width: 620px;
+  margin: 64px auto 0 auto;
+  padding: 0 20px;
+}
+
+.menu-btn {
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  min-height: 108px; /* tamaño más contenido */
+  /* sin max-width para que no se afinen en el menú principal */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 3px 10px rgba(255, 107, 53, 0.28);
+  transition: all 0.25s ease;
+  cursor: pointer;
+  padding: 12px 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-btn .icon {
+  font-size: 28px;
+  margin-bottom: 8px;
+  display: block;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+/* Escala de imágenes dentro del contenedor de ícono */
+.menu-btn .icon img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.menu-btn .label { 
+  font-size: 14px; 
+  line-height: 1.3; 
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  font-weight: 600;
+}
+
+.menu-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(255, 107, 53, 0.35);
+}
+
+.menu-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.28);
+}
+
+/* Variaciones de color para botones del menú principal */
+.menu-grid .menu-btn:nth-child(1) { background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%); }
+.menu-grid .menu-btn:nth-child(2) { background: linear-gradient(135deg, #f7931e 0%, #ffad33 100%); }
+.menu-grid .menu-btn:nth-child(3) { background: linear-gradient(135deg, #ff7849 0%, #ff9a5a 100%); }
+.menu-grid .menu-btn:nth-child(4) { background: linear-gradient(135deg, #ff8c42 0%, #ffa45c 100%); }
+.menu-grid .menu-btn:nth-child(5) { background: linear-gradient(135deg, #f7941d 0%, #fdb750 100%); }
+.menu-grid .menu-btn:nth-child(6) { background: linear-gradient(135deg, #ff9a5a 0%, #ffb877 100%); }
+
+/* Íconos más grandes solo en el Menú Principal */
+.page-menu .menu-btn .icon {
+  font-size: 60px !important; /* tamaño solicitado */
+  margin-bottom: 6px;
+  line-height: 1 !important;
+}
+
+/* En el menú principal, las imágenes escalan al tamaño del contenedor de ícono */
+.page-menu .menu-btn .icon img {
+  width: 60px !important;
+  height: 60px !important;
+  object-fit: contain;
+}
+
+/* Ajustes solo para el Menú Principal: botones más angostos */
+.page-menu .menu-grid {
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px; /* un poco más compacto */
+  max-width: 600px; /* limita el estiramiento del grid */
+}
+
+.page-menu .menu-btn {
+  width: 140px !important;
+  height: 140px !important;
+  max-width: 140px !important; /* botones más angostos FORZADO */
+  min-width: 140px !important;
+  padding: 8px !important; /* menos padding para que el ícono ocupe más */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Evitar que media queries sobreescriban el menú principal */
+@media (min-width: 769px) {
+  .page-menu .menu-grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    max-width: 600px;
+    gap: 14px;
+  }
+  .page-menu .menu-btn { width: 140px !important; height: 140px !important; }
+  .page-menu .menu-btn .icon { font-size: 60px !important; }
+  .page-menu .menu-btn .icon img { width: 60px !important; height: 60px !important; }
+}
+
 /* ========================================
    RESET & BASE STYLES
    ======================================== */
@@ -511,37 +627,43 @@ textarea::placeholder {
 }
 
 /* Menu grid for admin dashboard */
-.menu-grid {
+.page-recursos .menu-grid,
+.page-informes .menu-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 16px;
-  max-width: 900px;
+  /* Fijamos columnas para que ambos tengan idéntica separación visual */
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  max-width: 540px; /* 5 tarjetas de 100px + 4 gaps de 8px + padding */
   margin: 80px auto 0 auto;
   padding: 0 20px;
 }
 
-.menu-btn {
+.page-recursos .menu-btn,
+.page-informes .menu-btn {
   background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
   color: white;
   border: none;
-  border-radius: 12px;
-  min-height: 120px;
+  border-radius: 10px;
+  /* Más altos que anchos */
+  min-height: 140px;
+  max-width: 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-weight: 600;
   font-size: 14px;
-  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+  box-shadow: 0 3px 10px rgba(255, 107, 53, 0.3);
   transition: all 0.25s ease;
   cursor: pointer;
-  padding: 16px 12px;
+  padding: 10px 6px;
   position: relative;
   overflow: hidden;
 }
 
 /* Efecto de brillo sutil */
-.menu-btn::after {
+.page-recursos .menu-btn::after,
+.page-informes .menu-btn::after {
   content: '';
   position: absolute;
   top: -50%;
@@ -553,94 +675,115 @@ textarea::placeholder {
   pointer-events: none;
 }
 
-.menu-btn .icon {
-  font-size: 40px;
-  margin-bottom: 8px;
+.page-recursos .menu-btn .icon,
+.page-informes .menu-btn .icon {
+  font-size: 36px;
+  margin-bottom: 6px;
   display: block;
-  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15));
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }
 
-.menu-btn .label { 
-  font-size: 14px; 
-  line-height: 1.3; 
+.page-recursos .menu-btn .label, 
+.page-informes .menu-btn .label { 
+  font-size: 12px; 
+  line-height: 1.2; 
   text-align: center;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.15);
   font-weight: 600;
 }
 
-.menu-btn:hover {
+.page-recursos .menu-btn:hover,
+.page-informes .menu-btn:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 20px rgba(255, 107, 53, 0.4);
 }
 
-.menu-btn:active {
+.page-recursos .menu-btn:active,
+.page-informes .menu-btn:active {
   transform: translateY(0);
   box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
 }
 
 /* Variaciones de color naranja para cada botón */
-.menu-btn:nth-child(1) {
+.page-recursos .menu-btn:nth-child(1),
+.page-informes .menu-btn:nth-child(1) {
   background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
 }
 
-.menu-btn:nth-child(2) {
+.page-recursos .menu-btn:nth-child(2),
+.page-informes .menu-btn:nth-child(2) {
   background: linear-gradient(135deg, #f7931e 0%, #ffad33 100%);
 }
 
-.menu-btn:nth-child(3) {
+.page-recursos .menu-btn:nth-child(3),
+.page-informes .menu-btn:nth-child(3) {
   background: linear-gradient(135deg, #ff7849 0%, #ff9a5a 100%);
 }
 
-.menu-btn:nth-child(4) {
+.page-recursos .menu-btn:nth-child(4),
+.page-informes .menu-btn:nth-child(4) {
   background: linear-gradient(135deg, #ff8c42 0%, #ffa45c 100%);
 }
 
-.menu-btn:nth-child(5) {
+.page-recursos .menu-btn:nth-child(5),
+.page-informes .menu-btn:nth-child(5) {
   background: linear-gradient(135deg, #f7941d 0%, #fdb750 100%);
 }
 
 /* Responsive */
 @media (min-width: 769px) {
-  .menu-grid {
+  .page-recursos .menu-grid,
+  .page-informes .menu-grid {
+    /* Desktop: misma cantidad de columnas y ancho total para ambos */
     grid-template-columns: repeat(5, 1fr);
-    max-width: 850px;
+    max-width: 540px;
   }
-  .menu-btn {
-    min-height: 130px;
+  .page-recursos .menu-btn,
+  .page-informes .menu-btn {
+    min-height: 140px;
+    padding: 10px 6px;
+  }
+    .page-recursos .menu-btn .icon,
+    .page-informes .menu-btn .icon {
+      font-size: 38px;
+    }
+  .page-recursos .menu-btn .label,
+  .page-informes .menu-btn .label {
+    font-size: 12px;
   }
 }
 
 @media (max-width: 768px) and (min-width: 481px) {
   .menu-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
+    gap: 12px;
   }
   .menu-btn {
-    min-height: 110px;
-    padding: 14px 10px;
+    min-height: 90px;
+    padding: 10px 8px;
   }
   .menu-btn .icon {
-    font-size: 36px;
+    font-size: 24px;
     margin-bottom: 6px;
   }
   .menu-btn .label {
-    font-size: 13px;
+    font-size: 12px;
   }
 }
 
 @media (max-width: 480px) {
   .menu-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 10px;
     margin-top: 20px;
   }
   .menu-btn {
-    min-height: 100px;
-    padding: 12px 8px;
+    min-height: 84px;
+    padding: 8px 6px;
   }
   .menu-btn .icon {
-    font-size: 32px;
-    margin-bottom: 6px;
+    font-size: 22px;
+    margin-bottom: 4px;
   }
   .menu-btn .label {
     font-size: 12px;

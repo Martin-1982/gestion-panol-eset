@@ -8,80 +8,89 @@ import Proveedores from "./Proveedores";
 export default function AdminDashboard() {
   const [activePage, setActivePage] = useState("menu");
   
-  // Obtener el nombre del rol - puede venir como nombre o como ID
   const getRoleName = () => {
-    const roleFromStorage = localStorage.getItem('role') || '1';
-    
-    // Si ya es un nombre (no es número), devolverlo
-    if (isNaN(roleFromStorage)) {
-      return roleFromStorage;
-    }
-    
-    // Si es un número, mapear a nombre
-    const roleMap = {
-      '1': 'Administrador',
-      '2': 'Usuario',
-      '3': 'Invitado'
-    };
-    
-    return roleMap[roleFromStorage] || 'Usuario';
+    const roleFromStorage = localStorage.getItem('role');
+    if (!roleFromStorage) return 'Sin rol';
+    return roleFromStorage;
   };
-  
   const role = getRoleName();
 
   const handleLogout = () => {
-    // clear local session info and go to root (login)
     try { localStorage.clear(); } catch (e) {}
     window.location.href = '/';
   };
 
-  const renderPage = () => {
+  function renderPage() {
     switch (activePage) {
+      case "recursos":
+        return (
+          <div className="main-content page-recursos">
+            <div className="dashboard-header">
+              <h2 className="dashboard-title">Recursos</h2>
+              <button className="btn-outline" onClick={() => setActivePage("menu")}>Volver al menú</button>
+            </div>
+            <div className="menu-grid">
+              <button className="menu-btn" onClick={() => setActivePage("entradas")}>
+                <span className="icon">📥</span>
+                <span className="label">Entradas</span>
+              </button>
+              <button className="menu-btn" onClick={() => setActivePage("salidas")}>
+                <span className="icon">📤</span>
+                <span className="label">Salidas</span>
+              </button>
+              <button className="menu-btn" onClick={() => setActivePage("productos")}>
+                <span className="icon">📦</span>
+                <span className="label">Productos</span>
+              </button>
+              <button className="menu-btn" onClick={() => setActivePage("proveedores")}>
+                <span className="icon">🏢</span>
+                <span className="label">Proveedores</span>
+              </button>
+            </div>
+          </div>
+        );
       case "entradas":
-        return <Entrada onBack={() => setActivePage("menu")} />;
+        return <Entrada onBack={() => setActivePage("recursos")} />;
       case "salidas":
-        return <Salida onBack={() => setActivePage("menu")} />;
+        return <Salida onBack={() => setActivePage("recursos")} />;
+      case "productos":
+        return <Productos onBack={() => setActivePage("recursos")} />;
+      case "proveedores":
+        return <Proveedores onBack={() => setActivePage("recursos")} />;
       case "informes":
         return <Informe onBack={() => setActivePage("menu")} />;
-      case "productos":
-        return <Productos onBack={() => setActivePage("menu")} />;
-      case "proveedores":
-        return <Proveedores onBack={() => setActivePage("menu")} />;
+      case "solicitudes":
+      case "reservas":
+      case "mantenimiento":
+      case "comedor":
+        return (
+          <div className="main-content" style={{textAlign:'center',marginTop:'80px'}}>
+            <span style={{fontSize:'64px',color:'#ff6b35'}}>🚧</span>
+            <h2>Componente en desarrollo</h2>
+            <button className="btn-outline" style={{marginTop:'32px'}} onClick={()=>setActivePage("menu")}>Volver al menú</button>
+          </div>
+        );
       default:
-          return (
-            <div className="main-content">
-              <div className="dashboard-header">
-                <h2 className="dashboard-title">Menú Principal ({role})</h2>
-                <div className="top-actions">
-                  <button className="btn-outline" onClick={handleLogout}>Cerrar Sesión</button>
-                </div>
-              </div>
-              <div className="menu-grid">
-                <button className="menu-btn" onClick={() => setActivePage("productos")} aria-label="Productos">
-                  <span className="icon">📦</span>
-                  <span className="label">Productos</span>
-                </button>
-                <button className="menu-btn" onClick={() => setActivePage("proveedores")} aria-label="Proveedores">
-                  <span className="icon">🏢</span>
-                  <span className="label">Proveedores</span>
-                </button>
-                <button className="menu-btn" onClick={() => setActivePage("entradas")} aria-label="Entradas">
-                  <span className="icon">📥</span>
-                  <span className="label">Entradas</span>
-                </button>
-                <button className="menu-btn" onClick={() => setActivePage("salidas")} aria-label="Salidas">
-                  <span className="icon">📤</span>
-                  <span className="label">Salidas</span>
-                </button>
-                <button className="menu-btn" onClick={() => setActivePage("informes")} aria-label="Informes">
-                  <span className="icon">📊</span>
-                  <span className="label">Informes</span>
-                </button>
+        return (
+          <div className="main-content page-menu">
+            <div className="dashboard-header">
+              <h2 className="dashboard-title">Menú Principal ({role})</h2>
+              <div className="top-actions">
+                <button className="btn-outline" onClick={handleLogout}>Cerrar Sesión</button>
               </div>
             </div>
+            <div className="menu-grid">
+              <button className="menu-btn" onClick={() => setActivePage("recursos")}> <span className="icon">🗄️</span> <span className="label">Recursos</span> </button>
+              <button className="menu-btn" onClick={() => setActivePage("informes")}> <span className="icon">📊</span> <span className="label">Informes</span> </button>
+              <button className="menu-btn" onClick={() => setActivePage("solicitudes")}> <span className="icon">📝</span> <span className="label">Solicitudes</span> </button>
+              <button className="menu-btn" onClick={() => setActivePage("reservas")}> <span className="icon">📅</span> <span className="label">Reservas</span> </button>
+              <button className="menu-btn" onClick={() => setActivePage("mantenimiento")}> <span className="icon">🛠️</span> <span className="label">Mantenimiento</span> </button>
+              <button className="menu-btn" onClick={() => setActivePage("comedor")}> <span className="icon">🍽️</span> <span className="label">Comedor</span> </button>
+            </div>
+          </div>
         );
     }
-  };
+  }
 
   return (
     <div>
@@ -97,7 +106,6 @@ export default function AdminDashboard() {
           </div>
         </div>
       </header>
-
       <main>
         {renderPage()}
       </main>

@@ -17,31 +17,31 @@ export default function Informes({ onBack }) {
   if (pantalla === "mail_logs") return <MailLogs onBack={() => setPantalla("menu")} />;
 
   return (
-    <div className="main-content">
+    <div className="main-content page-informes">
       <div className="dashboard-header">
         <h2 className="dashboard-title">📊 Informes</h2>
         <button className="btn-outline" onClick={onBack}>Volver</button>
       </div>
 
-      <div className="menu-grid" style={{ maxWidth: 600, margin: '0 auto', marginTop: 24 }}>
-        <button className="menu-btn pulse blue" onClick={() => setPantalla("stock")}>
+  <div className="menu-grid">
+        <button className="menu-btn" onClick={() => setPantalla("stock")}>
           <span className="icon">📦</span>
           <span className="label">Informe de Stock</span>
         </button>
-        <button className="menu-btn pulse blue" onClick={() => setPantalla("entradas")}>
+        <button className="menu-btn" onClick={() => setPantalla("entradas")}>
           <span className="icon">➕</span>
           <span className="label">Informe de Entradas</span>
         </button>
-        <button className="menu-btn pulse blue" onClick={() => setPantalla("salidas")}>
+        <button className="menu-btn" onClick={() => setPantalla("salidas")}>
           <span className="icon">➖</span>
           <span className="label">Informe de Salidas</span>
         </button>
-        <button className="menu-btn pulse blue" onClick={() => setPantalla("mail_logs")}>
+        <button className="menu-btn" onClick={() => setPantalla("mail_logs")}>
           <span className="icon">📧</span>
           <span className="label">Historial de Correos</span>
         </button>
         <button
-          className="menu-btn pulse gray"
+          className="menu-btn"
           onClick={async () => {
             // remitos vacíos: izquierda = archivo, derecha = entrega
             // Los campos contienen líneas/espacios para poder imprimir y completar a mano.

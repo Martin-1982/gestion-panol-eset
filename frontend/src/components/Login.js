@@ -5,6 +5,12 @@ import API_BASE_URL from '../config';
 import { FaSpinner } from 'react-icons/fa';
 
 export default function Login({ setPantalla, openRegister, registrationMessage, clearRegistrationMessage }) {
+  // Expiración de sesión por inactividad
+  const SESSION_TIMEOUT_MINUTES = 15;
+  const updateLastActivity = () => {
+    localStorage.setItem('lastActivity', Date.now().toString());
+  };
+
   const [showResetModal, setShowResetModal] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [resetLoading, setResetLoading] = useState(false);
@@ -15,6 +21,7 @@ export default function Login({ setPantalla, openRegister, registrationMessage, 
 
   const handleLogin = async (e) => {
     e.preventDefault();
+  updateLastActivity();
     if (!email.endsWith("@uner.edu.ar")) {
       notify("Solo se permite correo institucional (@uner.edu.ar)", 'error');
       return;
@@ -27,9 +34,11 @@ export default function Login({ setPantalla, openRegister, registrationMessage, 
       });
       localStorage.setItem("token", res.data.token);
       if (res.data.user) {
+        console.log('📊 Usuario recibido del backend:', res.data.user);
         localStorage.setItem('user', JSON.stringify(res.data.user));
         // Guardar el nombre del rol en lugar del ID
-        const roleName = res.data.user.rol_nombre || res.data.user.rol || 'Usuario';
+        const roleName = res.data.user.rol_nombre || 'Sin rol';
+        console.log('📋 Rol guardado en localStorage:', roleName);
         localStorage.setItem('role', roleName);
       }
       setPantalla("menu");
@@ -44,6 +53,7 @@ export default function Login({ setPantalla, openRegister, registrationMessage, 
 
   const sendReset = async () => {
     if (!resetEmail) return setResetMessage({ type: 'error', text: 'Ingresá un correo válido' });
+  updateLastActivity();
     setResetLoading(true);
     setResetMessage(null);
     try {

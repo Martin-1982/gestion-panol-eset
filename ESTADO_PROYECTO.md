@@ -1,7 +1,7 @@
 # 📋 Estado del Proyecto - Sistema de Gestión Pañol ESET
 
-**Fecha de actualización:** 1 de diciembre de 2025  
-**Versión actual:** 1.0.0 (Experimental - Módulo Administrador)
+**Fecha de actualización:** 3 de diciembre de 2025  
+**Versión actual:** 1.1.0 (Experimental - Módulo Administrador con mejoras)
 
 ---
 
@@ -14,25 +14,33 @@
 - **Acceso:** Configurada en variables de entorno de Railway
 
 ### Backend (API REST)
-- **Plataforma:** Railway
-- **URL:** https://gestion-panol-eset-production.up.railway.app
-- **Puerto:** 8080
+- **Plataforma:** Railway / Desarrollo Local
+- **URL Producción:** https://gestion-panol-eset-production.up.railway.app
+- **URL Desarrollo:** http://localhost:4000
+- **Puerto:** 4000 (local) / 8080 (Railway)
 - **Tecnología:** Node.js + Express
 - **Estado:** ✅ Desplegado y funcional
 - **Endpoint de salud:** `/health` (verifica conexión a BD)
 - **Características:**
-  - Autenticación JWT
+  - Autenticación JWT con retorno de rol_nombre desde BD
   - Middlewares de validación
   - Manejo de archivos (uploads)
   - Migraciones de BD automatizadas
   - Sistema de logs de correo (SendGrid)
-
 ### Frontend (Aplicación Web)
-- **Plataforma:** Vercel
-- **URL:** https://gestion-panol-eset.vercel.app
+- **Plataforma:** Vercel / Desarrollo Local
+- **URL Producción:** https://gestion-panol-eset.vercel.app
+- **URL Desarrollo:** http://localhost:3000
 - **Tecnología:** React (Create React App)
 - **Estado:** ✅ Desplegado y funcional
-- **Configuración:** Apunta a backend en Railway mediante `REACT_APP_API_URL`
+- **Configuración:** 
+  - Desarrollo: `config.js` apunta a http://localhost:4000
+  - Producción: Apunta a backend en Railway mediante `REACT_APP_API_URL`
+- **Deployments:** Limpiado (solo versión actual activa)
+- **Mejoras recientes:**
+  - Menú reorganizado en 2 filas de 3 botones
+  - Header mejorado con logo UNER y branding
+  - Gestión de sesión mejorada (persistencia)e `REACT_APP_API_URL`
 - **Deployments:** Limpiado (solo versión actual activa)
 
 ### Repositorio Git
@@ -58,6 +66,9 @@
 - ✅ Recuperación de contraseña
 - ✅ Sistema de roles y permisos
 - ✅ Gestión de funciones por rol
+- ✅ **Mapeo de roles desde base de datos** (muestra nombre real del rol)
+- ✅ **Persistencia de sesión** (no redirige a login al refrescar si hay sesión válida)
+- ✅ **Timeout de sesión** (15 minutos de inactividad)
 
 **Gestión de Inventario:**
 - ✅ Módulo de Productos (CRUD completo)
@@ -227,6 +238,7 @@
   - [ ] Tipografía consistente
   - [ ] Espaciados y márgenes uniformes
   - [ ] Animaciones sutiles
+  - [ ] **PENDIENTE: Mejorar diseño visual de botones en páginas Recursos e Informes** (tamaño, espaciado, iconos)
   
 - [ ] **Responsive Design (Multi-plataforma)**
   - [ ] Optimización para celulares (320px - 480px)
@@ -360,6 +372,10 @@
 - ✅ Confusión de ramas master/main → **Solucionado:** Normalizado a main
 - ✅ Git upstream incorrecto → **Solucionado:** Apunta a origin/main
 - ✅ Código con console.logs de debug → **Solucionado:** Limpieza completa v1.0.0
+- ✅ Rol mostraba ID en lugar de nombre → **Solucionado:** Backend retorna rol_nombre con JOIN a tabla roles
+- ✅ Sesión se perdía al refrescar página → **Solucionado:** Implementado getInitialScreen() con validación de timestamp
+- ✅ AdminDashboard.js corrupto con código duplicado → **Solucionado:** Restauración completa del archivo
+- ✅ Frontend apuntaba a Railway en desarrollo → **Solucionado:** config.js configurado para localhost:4000
 
 ---
 
