@@ -1292,7 +1292,7 @@ input[type="checkbox"] {
   color: var(--gray-700);
 }
 
-/* Grid de filtros - horizontal en desktop, apilado en mobile */
+/* Grid de filtros - horizontal en desktop, 2x2 en mobile/tablet */
 .filtros-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -1300,17 +1300,11 @@ input[type="checkbox"] {
   margin-top: 8px;
 }
 
-/* En tablets y móviles apilamos en 2x2 */
+/* En tablets y móviles: 2x2 */
 @media (max-width: 768px) {
   .filtros-grid {
     grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* En móviles pequeños apilamos verticalmente */
-@media (max-width: 600px) {
-  .filtros-grid {
-    grid-template-columns: 1fr;
+    gap: 10px;
   }
 }
 
