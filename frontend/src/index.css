@@ -1292,6 +1292,28 @@ input[type="checkbox"] {
   color: var(--gray-700);
 }
 
+/* Grid de filtros - horizontal en desktop, apilado en mobile */
+.filtros-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 8px;
+}
+
+/* En tablets y móviles apilamos en 2x2 */
+@media (max-width: 768px) {
+  .filtros-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* En móviles pequeños apilamos verticalmente */
+@media (max-width: 600px) {
+  .filtros-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ========================================
    TABLAS - ESTILOS GENERALES
    ======================================== */
@@ -1445,6 +1467,7 @@ input[type="checkbox"] {
   
   /* Botones touch-friendly */
   .btn,
+  .btn-primary,
   .btn-outline {
     min-height: 44px;
     padding: 12px 20px;

@@ -374,7 +374,7 @@ export default function Salida({ onBack }) {
         {toast.visible && <div className={`toast${toast.type === 'error' ? ' toast-error' : ''}`}>{toast.message}</div>}
         
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
           <h2 style={{ margin: 0, fontSize: '22px', color: 'var(--primary)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span>📤</span>
             <span>Registrar Salida</span>
@@ -382,12 +382,12 @@ export default function Salida({ onBack }) {
           <button type="button" onClick={onBack} className="btn-outline">⬅ Volver</button>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px', marginBottom: '20px' }}>
+        <div className="form-grid" style={{ marginBottom: '20px' }}>
           {/* Destino/Área */}
-          <div>
+          <div className="form-group">
             <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600, color: 'var(--gray-700)' }}>Destino / Área *</label>
             <div style={{ position: 'relative' }}>
-              <input value={areaQuery} onChange={e => onAreaChange(e.target.value)} onKeyDown={onAreaKeyDown} placeholder="Buscar..." type="text" style={{ width: '100%', padding: '8px 10px', fontSize: '14px' }} />
+              <input value={areaQuery} onChange={e => onAreaChange(e.target.value)} onKeyDown={onAreaKeyDown} placeholder="Buscar..." type="text" style={{ width: '100%', padding: '8px 10px', fontSize: '16px' }} />
               {areaSugerencias && areaSugerencias.length > 0 && areaQuery && (
                 <div className="autocomplete-list">
                   {areaSugerencias.map((a, idx) => (
@@ -399,18 +399,18 @@ export default function Salida({ onBack }) {
           </div>
 
           {/* Responsable */}
-          <div>
+          <div className="form-group">
             <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600, color: 'var(--gray-700)' }}>Responsable *</label>
             <div style={{ display: 'flex', gap: '8px' }}>
-              <input value={responsable} onChange={e => setResponsable(e.target.value)} type="text" placeholder="Nombre..." style={{ flex: 1, padding: '8px 10px', fontSize: '14px' }} />
-              <button type="button" className="btn-icon" style={{ width: '36px', height: '36px', fontSize: '16px' }} aria-label="Agregar responsable" onClick={() => { if (responsable && responsable.trim()) { setResponsables(prev => [...prev, responsable.trim()]); setResponsable(''); } }}>+</button>
+              <input value={responsable} onChange={e => setResponsable(e.target.value)} type="text" placeholder="Nombre..." style={{ flex: 1, padding: '8px 10px', fontSize: '16px', minHeight: '44px' }} />
+              <button type="button" className="btn-icon" style={{ width: '44px', height: '44px', minHeight: '44px', fontSize: '18px' }} aria-label="Agregar responsable" onClick={() => { if (responsable && responsable.trim()) { setResponsables(prev => [...prev, responsable.trim()]); setResponsable(''); } }}>+</button>
             </div>
             {responsables.length > 0 && (
               <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 {responsables.map((r, idx) => (
-                  <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 10px', background: 'var(--gray-100)', borderRadius: '4px', fontSize: '13px' }}>
+                  <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', background: 'var(--gray-100)', borderRadius: '4px', fontSize: '14px', minHeight: '40px' }}>
                     <span>{r}</span>
-                    <button type="button" style={{ padding: '2px 8px', fontSize: '11px', background: 'white', border: '1px solid var(--gray-300)', borderRadius: '3px', cursor: 'pointer' }} onClick={() => setResponsables(prev => prev.filter((_, i) => i !== idx))}>×</button>
+                    <button type="button" style={{ padding: '4px 10px', fontSize: '12px', background: 'white', border: '1px solid var(--gray-300)', borderRadius: '3px', cursor: 'pointer', minHeight: '32px' }} onClick={() => setResponsables(prev => prev.filter((_, i) => i !== idx))}>×</button>
                   </div>
                 ))}
               </div>
@@ -418,12 +418,12 @@ export default function Salida({ onBack }) {
           </div>
 
           {/* Agregar producto - ocupa 2 columnas */}
-          <div style={{ gridColumn: 'span 2' }}>
+          <div className="form-group" style={{ gridColumn: 'span 2' }}>
             <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600, color: 'var(--gray-700)' }}>Agregar Producto</label>
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-              <input ref={cantidadRef} value={cantidad} onChange={e => setCantidad(e.target.value)} placeholder="Cant." type="number" min="0" style={{ width: '90px', padding: '8px 10px', fontSize: '14px' }} />
-              <div style={{ flex: 1, position: 'relative' }}>
-                <input ref={productoInputRef} value={productoQuery} onChange={e => onProductoChange(e.target.value)} onKeyDown={onProductoKeyDown} placeholder="Buscar producto..." type="text" style={{ width: '100%', padding: '8px 10px', fontSize: '14px' }} />
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+              <input ref={cantidadRef} value={cantidad} onChange={e => setCantidad(e.target.value)} placeholder="Cant." type="number" min="0" style={{ width: '90px', padding: '8px 10px', fontSize: '16px', minHeight: '44px' }} />
+              <div style={{ flex: '1 1 200px', position: 'relative' }}>
+                <input ref={productoInputRef} value={productoQuery} onChange={e => onProductoChange(e.target.value)} onKeyDown={onProductoKeyDown} placeholder="Buscar producto..." type="text" style={{ width: '100%', padding: '8px 10px', fontSize: '16px', minHeight: '44px' }} />
                 {sugerencias.length > 0 && (
                   <div className="autocomplete-list">
                     {sugerencias.map((s, idx) => (
@@ -432,7 +432,7 @@ export default function Salida({ onBack }) {
                   </div>
                 )}
               </div>
-              <button type="button" onClick={agregarItem} className="btn-icon" style={{ width: '36px', height: '36px', fontSize: '16px' }} aria-label="Agregar item">✓</button>
+              <button type="button" onClick={agregarItem} className="btn-icon" style={{ width: '44px', height: '44px', minHeight: '44px', fontSize: '18px' }} aria-label="Agregar item">✓</button>
             </div>
           </div>
 
@@ -461,9 +461,9 @@ export default function Salida({ onBack }) {
                         <td style={{ fontWeight: 600 }}>{it.cantidad}</td>
                         <td>{it.nombre}</td>
                         <td>
-                          <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
-                            <button onClick={() => editarItem(i)} style={{ padding: '4px 10px', fontSize: '12px', background: 'white', border: '1px solid var(--gray-300)', borderRadius: '4px', cursor: 'pointer' }} aria-label="Editar">✏️</button>
-                            <button onClick={() => eliminarItem(i)} style={{ padding: '4px 10px', fontSize: '12px', background: 'white', border: '1px solid var(--gray-300)', borderRadius: '4px', cursor: 'pointer' }} aria-label="Eliminar">×</button>
+                          <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                            <button onClick={() => editarItem(i)} style={{ padding: '8px 12px', minHeight: '36px', fontSize: '14px', background: 'white', border: '1px solid var(--gray-300)', borderRadius: '4px', cursor: 'pointer' }} aria-label="Editar">✏️</button>
+                            <button onClick={() => eliminarItem(i)} style={{ padding: '8px 12px', minHeight: '36px', fontSize: '16px', background: 'white', border: '1px solid var(--gray-300)', borderRadius: '4px', cursor: 'pointer' }} aria-label="Eliminar">×</button>
                           </div>
                         </td>
                       </tr>
@@ -475,7 +475,7 @@ export default function Salida({ onBack }) {
           </div>
         </div>
 
-        <div style={{ borderTop: '1px solid var(--gray-200)', paddingTop: '16px', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+        <div style={{ borderTop: '1px solid var(--gray-200)', paddingTop: '16px', display: 'flex', justifyContent: 'flex-end', gap: '10px', flexWrap: 'wrap' }}>
           <button type="button" onClick={onBack} className="btn-outline">Cancelar</button>
           <button type="button" onClick={guardarSalida} className="btn-primary">💾 Guardar Salida</button>
         </div>

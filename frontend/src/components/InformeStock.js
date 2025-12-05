@@ -268,7 +268,7 @@ export default function InformeStock({ onBack }) {
         </div>
 
         {/* Checkboxes de filtros */}
-        <div className="form-group" style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginTop: '8px' }}>
+        <div className="filtros-grid">
           <label className="checkbox-label">
             <input
               type="checkbox"
@@ -319,12 +319,13 @@ export default function InformeStock({ onBack }) {
                 <th>Unidad</th>
                 <th>Mínimo</th>
                 <th>Stock</th>
+                <th>Vencimiento</th>
               </tr>
             </thead>
             <tbody>
               {filtrados.length === 0 && (
                 <tr>
-                  <td colSpan="7" className="muted" style={{ textAlign: 'center', padding: 24 }}>
+                  <td colSpan="8" className="muted" style={{ textAlign: 'center', padding: 24 }}>
                     No hay productos que mostrar
                   </td>
                 </tr>
@@ -342,6 +343,7 @@ export default function InformeStock({ onBack }) {
                       {i.stock}
                     </span>
                   </td>
+                  <td>{i.fecha_vencimiento || '-'}</td>
                 </tr>
               ))}
             </tbody>
