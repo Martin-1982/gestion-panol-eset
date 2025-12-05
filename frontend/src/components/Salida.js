@@ -383,11 +383,11 @@ export default function Salida({ onBack }) {
         </div>
 
         <div className="form-grid" style={{ marginBottom: '20px' }}>
-          {/* Destino/Área */}
-          <div className="form-group">
+          {/* Destino/Área - ancho completo en móvil */}
+          <div className="form-group form-group-full">
             <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600, color: 'var(--gray-700)' }}>Destino / Área *</label>
             <div style={{ position: 'relative' }}>
-              <input value={areaQuery} onChange={e => onAreaChange(e.target.value)} onKeyDown={onAreaKeyDown} placeholder="Buscar..." type="text" style={{ width: '100%', padding: '8px 10px', fontSize: '16px' }} />
+              <input value={areaQuery} onChange={e => onAreaChange(e.target.value)} onKeyDown={onAreaKeyDown} placeholder="Buscar..." type="text" style={{ width: '100%', padding: '10px 12px', fontSize: '16px', minHeight: '44px' }} />
               {areaSugerencias && areaSugerencias.length > 0 && areaQuery && (
                 <div className="autocomplete-list">
                   {areaSugerencias.map((a, idx) => (
@@ -398,12 +398,12 @@ export default function Salida({ onBack }) {
             </div>
           </div>
 
-          {/* Responsable */}
-          <div className="form-group">
+          {/* Responsable - ancho completo en móvil */}
+          <div className="form-group form-group-full">
             <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600, color: 'var(--gray-700)' }}>Responsable *</label>
             <div style={{ display: 'flex', gap: '8px' }}>
-              <input value={responsable} onChange={e => setResponsable(e.target.value)} type="text" placeholder="Nombre..." style={{ flex: 1, padding: '8px 10px', fontSize: '16px', minHeight: '44px' }} />
-              <button type="button" className="btn-icon" style={{ width: '44px', height: '44px', minHeight: '44px', fontSize: '18px' }} aria-label="Agregar responsable" onClick={() => { if (responsable && responsable.trim()) { setResponsables(prev => [...prev, responsable.trim()]); setResponsable(''); } }}>+</button>
+              <input value={responsable} onChange={e => setResponsable(e.target.value)} type="text" placeholder="Nombre..." style={{ flex: 1, padding: '10px 12px', fontSize: '16px', minHeight: '44px' }} />
+              <button type="button" className="btn-icon" style={{ width: '44px', height: '44px', minHeight: '44px', fontSize: '20px', flexShrink: 0 }} aria-label="Agregar responsable" onClick={() => { if (responsable && responsable.trim()) { setResponsables(prev => [...prev, responsable.trim()]); setResponsable(''); } }}>+</button>
             </div>
             {responsables.length > 0 && (
               <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -420,10 +420,10 @@ export default function Salida({ onBack }) {
           {/* Agregar producto - ocupa 2 columnas */}
           <div className="form-group" style={{ gridColumn: 'span 2' }}>
             <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600, color: 'var(--gray-700)' }}>Agregar Producto</label>
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-              <input ref={cantidadRef} value={cantidad} onChange={e => setCantidad(e.target.value)} placeholder="Cant." type="number" min="0" style={{ width: '90px', padding: '8px 10px', fontSize: '16px', minHeight: '44px' }} />
-              <div style={{ flex: '1 1 200px', position: 'relative' }}>
-                <input ref={productoInputRef} value={productoQuery} onChange={e => onProductoChange(e.target.value)} onKeyDown={onProductoKeyDown} placeholder="Buscar producto..." type="text" style={{ width: '100%', padding: '8px 10px', fontSize: '16px', minHeight: '44px' }} />
+            <div className="producto-add-container">
+              <input ref={cantidadRef} value={cantidad} onChange={e => setCantidad(e.target.value)} placeholder="Cant." type="number" min="0" style={{ width: '80px', padding: '10px 12px', fontSize: '16px', minHeight: '44px', flexShrink: 0 }} />
+              <div style={{ flex: '1 1 auto', position: 'relative', minWidth: '150px' }}>
+                <input ref={productoInputRef} value={productoQuery} onChange={e => onProductoChange(e.target.value)} onKeyDown={onProductoKeyDown} placeholder="Buscar producto..." type="text" style={{ width: '100%', padding: '10px 12px', fontSize: '16px', minHeight: '44px' }} />
                 {sugerencias.length > 0 && (
                   <div className="autocomplete-list">
                     {sugerencias.map((s, idx) => (
@@ -432,7 +432,7 @@ export default function Salida({ onBack }) {
                   </div>
                 )}
               </div>
-              <button type="button" onClick={agregarItem} className="btn-icon" style={{ width: '44px', height: '44px', minHeight: '44px', fontSize: '18px' }} aria-label="Agregar item">✓</button>
+              <button type="button" onClick={agregarItem} className="btn-primary" style={{ width: '50px', height: '44px', minHeight: '44px', fontSize: '20px', padding: '0', flexShrink: 0 }} aria-label="Agregar item">✓</button>
             </div>
           </div>
 

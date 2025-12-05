@@ -916,6 +916,32 @@ textarea::placeholder {
   position: relative;
 }
 
+/* Contenedor para agregar producto */
+.producto-add-container {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+  flex-wrap: nowrap;
+}
+
+@media (max-width: 480px) {
+  .producto-add-container {
+    flex-wrap: wrap;
+  }
+  
+  .producto-add-container input[type="number"] {
+    width: 100% !important;
+  }
+  
+  .producto-add-container > div {
+    flex: 1 1 100% !important;
+  }
+  
+  .producto-add-container button {
+    width: 100% !important;
+  }
+}
+
 .btn-icon {
   background: var(--gray-100);
   border: 1px solid var(--gray-300);
@@ -985,6 +1011,11 @@ textarea::placeholder {
 @media (max-width: 768px) {
   .form-grid {
     grid-template-columns: 1fr;
+  }
+  
+  /* Campos que ocupan ancho completo en móvil */
+  .form-group-full {
+    grid-column: 1 / -1;
   }
   
   /* Header ultra-compacto para móvil vertical */
