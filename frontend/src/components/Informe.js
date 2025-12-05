@@ -40,9 +40,15 @@ export default function Informes({ onBack }) {
           <span className="icon">📧</span>
           <span className="label">Historial de Correos</span>
         </button>
-        <button
-          className="menu-btn"
-          onClick={async () => {
+      </div>
+
+      {/* Botón de remito vacío - Solo en desarrollo local */}
+      {window.location.hostname === 'localhost' && (
+        <div style={{ marginTop: '24px', textAlign: 'center' }}>
+          <button
+            className="btn-outline"
+            style={{ fontSize: '13px', padding: '10px 16px' }}
+            onClick={async () => {
             // remitos vacíos: izquierda = archivo, derecha = entrega
             // Los campos contienen líneas/espacios para poder imprimir y completar a mano.
             const left = {
@@ -128,12 +134,12 @@ export default function Informes({ onBack }) {
             } catch (e) {
               console.warn(e);
             }
-          }}
-        >
-          <span className="icon">📄</span>
-          <span className="label">Generar remito vacío</span>
-        </button>
-      </div>
+            }}
+          >
+            📄 Generar remito vacío (Dev)
+          </button>
+        </div>
+      )}
 
       {showPreview && (
         <div className="app-modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) { setShowPreview(false); URL.revokeObjectURL(previewUrl); setPreviewUrl(null); } }}>

@@ -11,7 +11,9 @@ import { createWorkbookFromRows } from '../utils/excel';
 export default function InformeStock({ onBack }) {
   const [items, setItems] = useState([]);
   const [busqueda, setBusqueda] = useState("");
-  const [filtros, setFiltros] = useState({ bajo: false, sinStock: false });
+  const [categoriaFiltro, setCategoriaFiltro] = useState("");
+  const [subcategoriaFiltro, setSubcategoriaFiltro] = useState("");
+  const [filtros, setFiltros] = useState({ bajo: false, sinStock: false, proximoVencer: false, vencido: false });
   const [vistaPrevia, setVistaPrevia] = useState(false);
   const [emailOpen, setEmailOpen] = useState(false);
   const [downloadOpen, setDownloadOpen] = useState(false);
@@ -38,10 +40,34 @@ export default function InformeStock({ onBack }) {
       i.producto?.toLowerCase().includes(t) ||
       i.categoria?.toLowerCase().includes(t) ||
       i.subcategoria?.toLowerCase().includes(t);
+    
+    // Filtro por categoría
+    if (categoriaFiltro && i.categoria !== categoriaFiltro) return false;
+    
+    // Filtro por subcategoría
+    if (subcategoriaFiltro && i.subcategoria !== subcategoriaFiltro) return false;
+    
+    // Filtros de stock
     if (filtros.bajo && !(i.stock <= i.minimo && i.stock > 0)) return false;
     if (filtros.sinStock && i.stock > 0) return false;
+    
+    // TODO: Filtros de vencimiento (cuando se agregue fecha_vencimiento a productos)
+    // if (filtros.proximoVencer && ...) return false;
+    // if (filtros.vencido && ...) return false;
+    
     return coincide;
   });
+
+  // Obtener categorías únicas
+  const categorias = [...new Set(items.map(i => i.categoria).filter(Boolean))];
+  
+  // Obtener subcategorías únicas (filtradas por categoría si hay una seleccionada)
+  const subcategorias = [...new Set(
+    items
+      .filter(i => !categoriaFiltro || i.categoria === categoriaFiltro)
+      .map(i => i.subcategoria)
+      .filter(Boolean)
+  )];
 
   const exportarExcel = () => {
     const columns = [
@@ -191,18 +217,59 @@ export default function InformeStock({ onBack }) {
       </div>
 
       <div className="card card-responsive card-shadow">
+        {/* Búsqueda por texto */}
         <div className="form-group">
+          <label htmlFor="busqueda">🔍 Buscar</label>
           <input
+            id="busqueda"
             type="text"
-            placeholder="Buscar producto, categoría o subcategoría..."
+            placeholder="Buscar por nombre de producto..."
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
             className="input input-full"
           />
         </div>
 
-        <div className="form-group">
-          <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        {/* Filtros por categoría y subcategoría */}
+        <div className="form-row" style={{ gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <div className="form-group">
+            <label htmlFor="categoria">Categoría</label>
+            <select
+              id="categoria"
+              value={categoriaFiltro}
+              onChange={(e) => {
+                setCategoriaFiltro(e.target.value);
+                setSubcategoriaFiltro(''); // Reset subcategoría al cambiar categoría
+              }}
+              className="input"
+            >
+              <option value="">Todas las categorías</option>
+              {categorias.map((cat, idx) => (
+                <option key={idx} value={cat}>{cat}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="subcategoria">Subcategoría</label>
+            <select
+              id="subcategoria"
+              value={subcategoriaFiltro}
+              onChange={(e) => setSubcategoriaFiltro(e.target.value)}
+              className="input"
+              disabled={!categoriaFiltro}
+            >
+              <option value="">Todas las subcategorías</option>
+              {subcategorias.map((sub, idx) => (
+                <option key={idx} value={sub}>{sub}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Checkboxes de filtros */}
+        <div className="form-group" style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginTop: '8px' }}>
+          <label className="checkbox-label">
             <input
               type="checkbox"
               checked={filtros.bajo}
@@ -210,13 +277,34 @@ export default function InformeStock({ onBack }) {
             />
             <span>Stock bajo</span>
           </label>
-          <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginLeft: 16 }}>
+          
+          <label className="checkbox-label">
             <input
               type="checkbox"
               checked={filtros.sinStock}
               onChange={(e) => setFiltros({ ...filtros, sinStock: e.target.checked })}
             />
             <span>Sin stock</span>
+          </label>
+
+          <label className="checkbox-label" style={{ opacity: 0.5, cursor: 'not-allowed' }} title="Próximamente">
+            <input
+              type="checkbox"
+              checked={filtros.proximoVencer}
+              onChange={(e) => setFiltros({ ...filtros, proximoVencer: e.target.checked })}
+              disabled
+            />
+            <span>Próximo a vencer</span>
+          </label>
+
+          <label className="checkbox-label" style={{ opacity: 0.5, cursor: 'not-allowed' }} title="Próximamente">
+            <input
+              type="checkbox"
+              checked={filtros.vencido}
+              onChange={(e) => setFiltros({ ...filtros, vencido: e.target.checked })}
+              disabled
+            />
+            <span>Vencido</span>
           </label>
         </div>
 
