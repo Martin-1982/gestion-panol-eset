@@ -10,12 +10,17 @@ function Productos({ onBack }) {
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
     nombre: "",
-    tipo: "",
     categoria: "",
     subcategoria: "",
     presentacion: "",
     unidad: "",
     minimo: 0,
+    tipo: "", // uso o consumo
+    perecedero: "", // para Alimentos
+    clasificacion: "", // para Ferretería/Bazar/Limpieza/Librería (uso/consumo)
+    tipoLimpieza: "", // para Limpieza (productos/elementos/descartables)
+    tipoLibreria: "", // para Librería (elementos/insumos)
+    fechaVencimiento: "",
   });
 
   // filtros y buscador
@@ -77,12 +82,17 @@ function Productos({ onBack }) {
     setForm(
       producto || {
         nombre: "",
-        tipo: "",
         categoria: "",
         subcategoria: "",
         presentacion: "",
         unidad: "",
         minimo: 0,
+        tipo: "",
+        perecedero: "",
+        clasificacion: "",
+        tipoLimpieza: "",
+        tipoLibreria: "",
+        fechaVencimiento: "",
       }
     );
     setCategoriaSuggestions([]);
@@ -294,44 +304,150 @@ function Productos({ onBack }) {
           <div className="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-title">
             <h3 id="modal-title">{editProducto ? "Editar producto" : "Nuevo producto"}</h3>
             
-            <label>Nombre</label>
+            {/* Nombre - obligatorio */}
+            <label>Nombre *</label>
             <input ref={nombreRef} placeholder="Nombre del producto" value={form.nombre} onChange={(e)=> setForm({...form, nombre: e.target.value})} />
             
-            <label>Tipo</label>
-            <select value={form.tipo} onChange={(e)=> setForm({...form, tipo: e.target.value})}>
-              <option value="">-- Tipo --</option>
-              <option value="uso">Uso</option>
-              <option value="consumo">Consumo</option>
+            {/* Categoría - obligatorio */}
+            <label>Categoría *</label>
+            <select value={form.categoria} onChange={(e) => { setForm({...form, categoria: e.target.value, subcategoria: ""}); setSubcategoriaSuggestions([]); }}>
+              <option value="">-- Seleccionar --</option>
+              <option value="Alimentos">Alimentos</option>
+              <option value="Ferretería">Ferretería</option>
+              <option value="Bazar">Bazar</option>
+              <option value="Limpieza">Limpieza</option>
+              <option value="Librería">Librería</option>
+              <option value="Equipamiento">Equipamiento</option>
             </select>
 
-            <label>Categoría</label>
-            <div style={{ position: "relative" }}>
-              <input ref={categoriaRef} placeholder="Categoría" value={form.categoria||""} onChange={(e)=> handleCategoriaChange(e.target.value)} />
-              {categoriaSuggestions.length > 0 && (
-                <ul style={listStyle}>
-                  {categoriaSuggestions.map((c,i)=> <li key={i} onClick={() => { setForm({...form, categoria:c}); setCategoriaSuggestions([]); }} style={itemStyle}>{c}</li>)}
-                </ul>
-              )}
-            </div>
+            {/* Subcategoría - dependiente de Categoría */}
+            {form.categoria && (
+              <>
+                <label>Subcategoría *</label>
+                <select value={form.subcategoria} onChange={(e) => setForm({...form, subcategoria: e.target.value})}>
+                  <option value="">-- Seleccionar --</option>
+                  
+                  {form.categoria === "Alimentos" && (
+                    <>
+                      <option value="Cárnico">Cárnico</option>
+                      <option value="Almacén">Almacén</option>
+                      <option value="Verduras">Verduras</option>
+                      <option value="Frutas">Frutas</option>
+                    </>
+                  )}
+                  
+                  {form.categoria === "Ferretería" && (
+                    <>
+                      <option value="Electricidad">Electricidad</option>
+                      <option value="Sanitario">Sanitario</option>
+                      <option value="Herrajes y Construcción">Herrajes y Construcción</option>
+                      <option value="Herramientas">Herramientas</option>
+                      <option value="Seguridad">Seguridad</option>
+                    </>
+                  )}
+                  
+                  {form.categoria === "Bazar" && (
+                    <>
+                      <option value="Electrónica">Electrónica</option>
+                      <option value="Decoración">Decoración</option>
+                      <option value="Textiles">Textiles</option>
+                    </>
+                  )}
+                  
+                  {form.categoria === "Limpieza" && (
+                    <>
+                      <option value="Productos Químicos">Productos Químicos</option>
+                      <option value="Elementos">Elementos</option>
+                      <option value="Descartables">Descartables</option>
+                      <option value="Papelería">Papelería</option>
+                    </>
+                  )}
+                  
+                  {form.categoria === "Librería" && (
+                    <>
+                      <option value="Elementos">Elementos</option>
+                      <option value="Insumos">Insumos</option>
+                    </>
+                  )}
+                  
+                  {form.categoria === "Equipamiento" && (
+                    <>
+                      <option value="Mobiliario">Mobiliario</option>
+                      <option value="Insumos">Insumos</option>
+                      <option value="Informática">Informática</option>
+                      <option value="Microbiología">Microbiología</option>
+                      <option value="Música">Música</option>
+                      <option value="Deportivos">Deportivos</option>
+                      <option value="Jardinería">Jardinería</option>
+                    </>
+                  )}
+                </select>
+              </>
+            )}
 
-            <label>Subcategoría</label>
-            <div style={{ position: "relative" }}>
-              <input ref={subcategoriaRef} placeholder="Subcategoría" value={form.subcategoria||""} onChange={(e)=> handleSubcategoriaChange(e.target.value)} />
-              {subcategoriaSuggestions.length > 0 && (
-                <ul style={listStyle}>
-                  {subcategoriaSuggestions.map((s,i)=> <li key={i} onClick={() => { setForm({...form, subcategoria:s}); setSubcategoriaSuggestions([]); }} style={itemStyle}>{s}</li>)}
-                </ul>
-              )}
-            </div>
+            {/* Campos específicos según Categoría */}
+            {form.categoria === "Alimentos" && (
+              <>
+                <label>Tipo *</label>
+                <select value={form.perecedero} onChange={(e) => setForm({...form, perecedero: e.target.value})}>
+                  <option value="">-- Seleccionar --</option>
+                  <option value="perecedero">Perecedero</option>
+                  <option value="no-perecedero">No Perecedero</option>
+                </select>
+              </>
+            )}
 
-            <label>Presentación</label>
+            {(form.categoria === "Ferretería" || form.categoria === "Bazar" || form.categoria === "Librería") && (
+              <>
+                <label>Tipo *</label>
+                <select value={form.clasificacion} onChange={(e) => setForm({...form, clasificacion: e.target.value})}>
+                  <option value="">-- Seleccionar --</option>
+                  <option value="uso">Uso</option>
+                  <option value="consumo">Consumo</option>
+                </select>
+              </>
+            )}
+
+            {form.categoria === "Limpieza" && (
+              <>
+                <label>Tipo *</label>
+                <select value={form.clasificacion} onChange={(e) => setForm({...form, clasificacion: e.target.value})}>
+                  <option value="">-- Seleccionar --</option>
+                  <option value="uso">Uso</option>
+                  <option value="consumo">Consumo</option>
+                </select>
+              </>
+            )}
+
+            {form.categoria === "Equipamiento" && (
+              <>
+                <label>Tipo *</label>
+                <select value={form.clasificacion} onChange={(e) => setForm({...form, clasificacion: e.target.value})}>
+                  <option value="">-- Seleccionar --</option>
+                  <option value="uso">Uso</option>
+                  <option value="consumo">Consumo</option>
+                </select>
+              </>
+            )}
+
+            {/* Presentación y Unidad */}
+            <label>Presentación *</label>
             <input placeholder="Ej: Caja, Bolsa, Litro" value={form.presentacion||""} onChange={(e)=> setForm({...form, presentacion: e.target.value})} />
             
-            <label>Unidad</label>
+            <label>Unidad *</label>
             <input placeholder="Ej: kg, litros, unidades" value={form.unidad||""} onChange={(e)=> setForm({...form, unidad: e.target.value})} />
             
+            {/* Stock Mínimo */}
             <label>Stock Mínimo</label>
             <input type="number" placeholder="0" value={form.minimo||0} min={0} step={1} onChange={(e)=> setForm({...form, minimo: e.target.value})} />
+
+            {/* Fecha de Vencimiento (opcional, para perecederos) */}
+            {form.categoria === "Alimentos" && form.perecedero === "perecedero" && (
+              <>
+                <label>Fecha de Vencimiento</label>
+                <input type="date" value={form.fechaVencimiento||""} onChange={(e)=> setForm({...form, fechaVencimiento: e.target.value})} />
+              </>
+            )}
 
             <div className="form-actions">
               <button className="btn btn-outline compact-btn" onClick={() => setShowModal(false)}>Cancelar</button>
