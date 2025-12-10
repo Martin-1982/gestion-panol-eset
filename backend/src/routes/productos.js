@@ -32,13 +32,13 @@ router.get("/", async (req, res) => {
 // 📌 Crear un producto nuevo
 router.post("/", auth, async (req, res) => {
   try {
-    const { nombre, tipo, categoria, subcategoria, presentacion, unidad, minimo } = req.body;
+    const { nombre, categoria, subcategoria, presentacion, unidad, minimo, perecedero, clasificacion, tipoLimpieza, tipoLibreria, fechaVencimiento } = req.body;
 
     const result = await pool.query(
-      `INSERT INTO productos (nombre, tipo, categoria, subcategoria, presentacion, unidad, minimo)
-       VALUES ($1,$2,$3,$4,$5,$6,$7)
+      `INSERT INTO productos (nombre, categoria, subcategoria, presentacion, unidad, minimo, perecedero, clasificacion, tipo_limpieza, tipo_libreria, fecha_vencimiento)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
        RETURNING *`,
-      [nombre, tipo || null, categoria, subcategoria, presentacion, unidad, minimo || 0]
+      [nombre, categoria, subcategoria, presentacion, unidad, minimo || 0, perecedero || null, clasificacion || null, tipoLimpieza || null, tipoLibreria || null, fechaVencimiento || null]
     );
 
     res.json(result.rows[0]);
@@ -52,15 +52,16 @@ router.post("/", auth, async (req, res) => {
 router.put("/:id", auth, async (req, res) => {
   try {
     const { id } = req.params;
-    const { nombre, tipo, categoria, subcategoria, presentacion, unidad, minimo } = req.body;
+    const { nombre, categoria, subcategoria, presentacion, unidad, minimo, perecedero, clasificacion, tipoLimpieza, tipoLibreria, fechaVencimiento } = req.body;
 
     const result = await pool.query(
       `UPDATE productos 
-       SET nombre=$1, tipo=$2, categoria=$3, subcategoria=$4, 
-           presentacion=$5, unidad=$6, minimo=$7
-       WHERE id=$8
+       SET nombre=$1, categoria=$2, subcategoria=$3, 
+           presentacion=$4, unidad=$5, minimo=$6, 
+           perecedero=$7, clasificacion=$8, tipo_limpieza=$9, tipo_libreria=$10, fecha_vencimiento=$11
+       WHERE id=$12
        RETURNING *`,
-      [nombre, tipo || null, categoria, subcategoria, presentacion, unidad, minimo || 0, id]
+      [nombre, categoria, subcategoria, presentacion, unidad, minimo || 0, perecedero || null, clasificacion || null, tipoLimpieza || null, tipoLibreria || null, fechaVencimiento || null, id]
     );
 
     if (result.rows.length === 0) {
