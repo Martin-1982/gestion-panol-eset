@@ -121,6 +121,7 @@ function ModalNuevoProducto({ onClose, onProductoCreado }) {
 
         <label>Nombre *</label>
         <input
+          className="input"
           ref={nombreRef}
           placeholder="Nombre del producto"
           value={form.nombre}
@@ -169,6 +170,7 @@ function ModalNuevoProducto({ onClose, onProductoCreado }) {
             {showNuevaSubcat && (
               <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
                 <input
+                  className="input"
                   style={{ flex: 1 }}
                   placeholder={`Nueva subcategoría para ${form.categoria}`}
                   value={nuevaSubcat}
@@ -189,6 +191,7 @@ function ModalNuevoProducto({ onClose, onProductoCreado }) {
 
         <label>Presentación *</label>
         <input
+          className="input"
           placeholder="Ej: Caja, Bolsa, Litro"
           value={form.presentacion}
           onChange={(e) => setForm({ ...form, presentacion: e.target.value })}
@@ -196,6 +199,7 @@ function ModalNuevoProducto({ onClose, onProductoCreado }) {
 
         <label>Unidad *</label>
         <input
+          className="input"
           placeholder="Ej: kg, litros, unidades"
           value={form.unidad}
           onChange={(e) => setForm({ ...form, unidad: e.target.value })}
@@ -203,6 +207,7 @@ function ModalNuevoProducto({ onClose, onProductoCreado }) {
 
         <label>Stock mínimo</label>
         <input
+          className="input"
           type="number"
           placeholder="0"
           min={0}
