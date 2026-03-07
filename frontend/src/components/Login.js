@@ -1,12 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { notify } from '../utils/notify';
 import API_BASE_URL from '../config';
 import { FaSpinner } from 'react-icons/fa';
 
 export default function Login({ setPantalla, openRegister, registrationMessage, clearRegistrationMessage }) {
-  // Expiración de sesión por inactividad
-  const SESSION_TIMEOUT_MINUTES = 15;
   const updateLastActivity = () => {
     localStorage.setItem('lastActivity', Date.now().toString());
   };
@@ -18,34 +15,27 @@ export default function Login({ setPantalla, openRegister, registrationMessage, 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
-  updateLastActivity();
+    setError("");
+    updateLastActivity();
     if (!email.endsWith("@uner.edu.ar")) {
-      notify("Solo se permite correo institucional (@uner.edu.ar)", 'error');
+      setError("Solo se permite correo institucional (@uner.edu.ar)");
       return;
     }
     setLoading(true);
     try {
-      const res = await axios.post(`${API_BASE_URL}/api/auth/login`, {
-        email,
-        password,
-      });
+      const res = await axios.post(`${API_BASE_URL}/api/auth/login`, { email, password });
       localStorage.setItem("token", res.data.token);
       if (res.data.user) {
-        console.log('📊 Usuario recibido del backend:', res.data.user);
         localStorage.setItem('user', JSON.stringify(res.data.user));
-        // Guardar el nombre del rol en lugar del ID
-        const roleName = res.data.user.rol_nombre || 'Sin rol';
-        console.log('📋 Rol guardado en localStorage:', roleName);
-        localStorage.setItem('role', roleName);
+        localStorage.setItem('role', res.data.user.rol_nombre || 'Sin rol');
       }
       setPantalla("menu");
     } catch (err) {
-      console.error(err?.response?.data || err);
-      const text = err?.response?.data?.error || 'Usuario o contraseña incorrectos';
-      notify(text, 'error');
+      setError(err?.response?.data?.error || 'Usuario o contraseña incorrectos');
     } finally {
       setLoading(false);
     }
@@ -53,17 +43,13 @@ export default function Login({ setPantalla, openRegister, registrationMessage, 
 
   const sendReset = async () => {
     if (!resetEmail) return setResetMessage({ type: 'error', text: 'Ingresá un correo válido' });
-  updateLastActivity();
+    updateLastActivity();
     setResetLoading(true);
     setResetMessage(null);
     try {
       const res = await axios.post(`${API_BASE_URL}/api/auth/password-reset-request`, { email: resetEmail });
       setResetMessage({ type: 'success', text: res.data.message || 'Solicitud enviada. Revisá tu correo.' });
-      setTimeout(() => {
-        setShowResetModal(false);
-        setResetEmail('');
-        setResetMessage(null);
-      }, 1400);
+      setTimeout(() => { setShowResetModal(false); setResetEmail(''); setResetMessage(null); }, 1400);
     } catch (err) {
       setResetMessage({ type: 'error', text: err?.response?.data?.error || 'Error al solicitar restablecimiento' });
     } finally {
@@ -90,7 +76,7 @@ export default function Login({ setPantalla, openRegister, registrationMessage, 
         <div style={{ textAlign: 'center', marginBottom: 12 }}>
           <h1 className="main-title">Sistema de Gestión Pañol</h1>
         </div>
-        
+
         <div className="login-card">
           <h2>Login</h2>
 
@@ -100,7 +86,7 @@ export default function Login({ setPantalla, openRegister, registrationMessage, 
               <input
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => { setEmail(e.target.value); setError(""); }}
                 placeholder="correo@uner.edu.ar"
                 required
                 disabled={loading}
@@ -112,12 +98,28 @@ export default function Login({ setPantalla, openRegister, registrationMessage, 
               <input
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => { setPassword(e.target.value); setError(""); }}
                 placeholder="••••••••"
                 required
                 disabled={loading}
               />
             </div>
+
+            {/* Mensaje de error inline */}
+            {error && (
+              <div style={{
+                background: '#fee2e2',
+                color: '#991b1b',
+                border: '1px solid #fca5a5',
+                borderRadius: '8px',
+                padding: '10px 14px',
+                fontSize: '14px',
+                fontWeight: 500,
+                marginBottom: '12px',
+              }}>
+                {error}
+              </div>
+            )}
 
             <button type="submit" className="btn-primary btn-full" disabled={loading}>
               {loading ? <><FaSpinner className="spinner" /> Cargando...</> : 'Iniciar sesión'}
@@ -143,7 +145,7 @@ export default function Login({ setPantalla, openRegister, registrationMessage, 
           <div className="modal-content" role="dialog" aria-modal="true">
             <h3>Restablecer contraseña</h3>
             <p className="muted">Ingresá tu correo institucional y te enviaremos un enlace para restablecer tu contraseña.</p>
-            
+
             <label>Correo institucional</label>
             <input
               type="email"
@@ -152,13 +154,13 @@ export default function Login({ setPantalla, openRegister, registrationMessage, 
               placeholder="correo@uner.edu.ar"
               disabled={resetLoading}
             />
-            
+
             {resetMessage && (
               <div className={`alert ${resetMessage.type === 'error' ? 'alert-error' : 'alert-success'}`}>
                 {resetMessage.text}
               </div>
             )}
-            
+
             <div className="form-actions">
               <button onClick={() => { setShowResetModal(false); setResetEmail(''); setResetMessage(null); }} className="btn-outline" disabled={resetLoading}>Cancelar</button>
               <button onClick={sendReset} className="btn-primary" disabled={resetLoading}>
