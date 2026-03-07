@@ -3,6 +3,7 @@ import axios from "axios";
 import API_BASE_URL from '../config';
 import ModalNuevoProducto from './ModalNuevoProducto';
 import ModalNuevoProveedor from './ModalNuevoProveedor';
+import { useToast, ToastMessage } from './useToast';
 
 export default function Entrada({ onBack }) {
   const [formData, setFormData] = useState({ producto_id: "", cantidad: "", costo: "", donacion: false, proveedor_id: "", fechaVencimiento: "", procedenciaDonacion: "" });
@@ -21,21 +22,16 @@ export default function Entrada({ onBack }) {
   const [showAddProducto, setShowAddProducto] = useState(false);
   const [showAddProveedor, setShowAddProveedor] = useState(false);
 
-  const [toast, setToast] = useState({ visible: false, message: "", type: "success" });
-  const toastTimer = useRef(null);
+  const { toast, showToast } = useToast();
 
   useEffect(() => {
     fetchProductos();
     fetchProveedores();
-    return () => { if (toastTimer.current) clearTimeout(toastTimer.current); };
+    return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const showToast = (message, type = "success", ms = 1600) => {
-    setToast({ visible: true, message, type });
-    if (toastTimer.current) clearTimeout(toastTimer.current);
-    toastTimer.current = setTimeout(() => setToast({ visible: false, message: "", type: "success" }), ms);
-  };
+
 
   async function fetchProductos() {
     try {
@@ -115,11 +111,7 @@ export default function Entrada({ onBack }) {
   return (
     <div className="main-content">
       <div className="card card-responsive">
-        {toast.visible && (
-          <div className="toast" style={{ background: toast.type === 'error' ? 'var(--danger)' : 'var(--success)', color: 'white', position: 'fixed', bottom: 20, left: '50%', transform: 'translateX(-50%)', zIndex: 3000 }}>
-            {toast.message}
-          </div>
-        )}
+        <ToastMessage toast={toast} />
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
           <h2 style={{ margin: 0, fontSize: '22px', color: 'var(--primary)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>

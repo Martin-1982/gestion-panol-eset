@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import API_BASE_URL from '../config';
 import { DELETE_CONFIRM_TEXT } from '../constants/messages';
+import { useToast, ToastMessage } from './useToast';
 import ModalNuevoProducto from './ModalNuevoProducto';
 
 const CATEGORIAS = [
@@ -30,14 +31,13 @@ function Productos({ onBack }) {
   const [filterCategoria, setFilterCategoria] = useState("");
   const [filterTipo, setFilterTipo] = useState("");
 
-  const [toast, setToast] = useState({ visible: false, message: "", type: "success" });
-  const toastTimer = useRef(null);
+  const { toast, showToast } = useToast();
   const nombreRef = useRef(null);
   const newButtonRef = useRef(null);
 
   useEffect(() => {
     fetchProductos();
-    return () => { if (toastTimer.current) clearTimeout(toastTimer.current); };
+    return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -50,11 +50,7 @@ function Productos({ onBack }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.categoria]);
 
-  const showToast = (message, type = "success", ms = 2000) => {
-    setToast({ visible: true, message, type });
-    if (toastTimer.current) clearTimeout(toastTimer.current);
-    toastTimer.current = setTimeout(() => setToast({ visible: false, message: "", type: "success" }), ms);
-  };
+
 
   const fetchProductos = async () => {
     try {
