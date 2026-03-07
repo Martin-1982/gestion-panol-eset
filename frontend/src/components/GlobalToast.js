@@ -30,7 +30,7 @@ export default function GlobalToast() {
         minWidth: 220,
         fontWeight: 500,
         fontSize: '1.05rem',
-        zIndex: 2000
+        zIndex: 9999
       }}
     >
       {toast.message}
