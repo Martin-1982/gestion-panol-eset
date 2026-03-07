@@ -50,25 +50,17 @@ export default function AdminDashboard() {
             </div>
           </div>
         );
-      case "entradas":
-        return <Entrada onBack={() => setActivePage("recursos")} />;
-      case "salidas":
-        return <Salida onBack={() => setActivePage("recursos")} />;
-      case "productos":
-        return <Productos onBack={() => setActivePage("recursos")} />;
-      case "proveedores":
-        return <Proveedores onBack={() => setActivePage("recursos")} />;
-      case "informes":
-        return <Informe onBack={() => setActivePage("menu")} />;
-      case "solicitudes":
-        return <Solicitudes onBack={() => setActivePage("menu")} />;
-      case "reservas":
-      case "mantenimiento":
+      case "entradas":    return <Entrada onBack={() => setActivePage("recursos")} />;
+      case "salidas":     return <Salida onBack={() => setActivePage("recursos")} />;
+      case "productos":   return <Productos onBack={() => setActivePage("recursos")} />;
+      case "proveedores": return <Proveedores onBack={() => setActivePage("recursos")} />;
+      case "informes":    return <Informe onBack={() => setActivePage("menu")} />;
+      case "solicitudes": return <Solicitudes onBack={() => setActivePage("menu")} />;
       case "comedor":
         return (
           <div className="main-content" style={{textAlign:'center',marginTop:'80px'}}>
             <span style={{fontSize:'64px',color:'#ff6b35'}}>🚧</span>
-            <h2>Componente en desarrollo</h2>
+            <h2>Módulo en desarrollo</h2>
             <button className="btn-outline" style={{marginTop:'32px'}} onClick={()=>setActivePage("menu")}>Volver al menú</button>
           </div>
         );
@@ -84,9 +76,7 @@ export default function AdminDashboard() {
             <div className="menu-grid">
               <button className="menu-btn" onClick={() => setActivePage("recursos")}> <span className="icon">🗄️</span> <span className="label">Recursos</span> </button>
               <button className="menu-btn" onClick={() => setActivePage("informes")}> <span className="icon">📊</span> <span className="label">Informes</span> </button>
-              <button className="menu-btn" onClick={() => setActivePage("solicitudes")}> <span className="icon">📝</span> <span className="label">Solicitudes</span> </button>
-              <button className="menu-btn" onClick={() => setActivePage("reservas")}> <span className="icon">📅</span> <span className="label">Reservas</span> </button>
-              <button className="menu-btn" onClick={() => setActivePage("mantenimiento")}> <span className="icon">🛠️</span> <span className="label">Mantenimiento</span> </button>
+              <button className="menu-btn" onClick={() => setActivePage("solicitudes")} title="Solicitá recursos, reservas de espacios o vehículos, y reportá mantenimiento"> <span className="icon">📝</span> <span className="label">Solicitudes</span> </button>
               <button className="menu-btn" onClick={() => setActivePage("comedor")}> <span className="icon">🍽️</span> <span className="label">Comedor</span> </button>
             </div>
           </div>
