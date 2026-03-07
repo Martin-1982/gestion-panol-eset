@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import API_BASE_URL from '../config';
 import ModalNuevoProducto from './ModalNuevoProducto';
+import ModalNuevoProveedor from './ModalNuevoProveedor';
 
 export default function Entrada({ onBack }) {
   const [formData, setFormData] = useState({ producto_id: "", cantidad: "", costo: "", donacion: false, proveedor_id: "", fechaVencimiento: "", procedenciaDonacion: "" });
@@ -19,9 +20,6 @@ export default function Entrada({ onBack }) {
 
   const [showAddProducto, setShowAddProducto] = useState(false);
   const [showAddProveedor, setShowAddProveedor] = useState(false);
-
-  const [newProveedor, setNewProveedor] = useState({ nombre: "", direccion: "", telefono: "", email: "", contacto: "" });
-  const proveedorNombreRef = useRef(null);
 
   const [toast, setToast] = useState({ visible: false, message: "", type: "success" });
   const toastTimer = useRef(null);
@@ -93,23 +91,7 @@ export default function Entrada({ onBack }) {
       setFormData({ producto_id: '', cantidad: '', costo: '', donacion: false, proveedor_id: '', fechaVencimiento: '', procedenciaDonacion: '' });
       setProductQuery(''); setProviderQuery(''); setShowSuggestions(false); setShowProvSuggestions(false);
     } catch (err) {
-      console.error(err);
       const msg = (err.response?.data?.error || err.response?.data?.message || err.message || 'Error guardando entrada');
-      showToast(msg, 'error');
-    }
-  };
-
-  const handleAddProveedor = async () => {
-    if (!newProveedor.nombre) return showToast('Nombre requerido', 'error');
-    try {
-      const token = localStorage.getItem('token');
-      const res = await axios.post(`${API_BASE_URL}/api/proveedores`, newProveedor, { headers: { Authorization: `Bearer ${token}` } });
-      setProveedores(p => [...p, res.data]);
-      setShowAddProveedor(false);
-      setNewProveedor({ nombre: '', direccion: '', telefono: '', email: '', contacto: '' });
-      showToast('Proveedor agregado', 'success');
-    } catch (err) {
-      const msg = (err.response?.data?.error || err.response?.data?.message || err.message || 'Error al agregar proveedor');
       showToast(msg, 'error');
     }
   };
@@ -120,7 +102,7 @@ export default function Entrada({ onBack }) {
         setFormData({ producto_id: '', cantidad: '', costo: '', donacion: false, proveedor_id: '', fechaVencimiento: '', procedenciaDonacion: '' });
         setProductQuery(''); setProviderQuery(''); setShowSuggestions(false); setShowProvSuggestions(false);
         if (showAddProducto) setShowAddProducto(false);
-        if (showAddProveedor) { setShowAddProveedor(false); setNewProveedor({ nombre: '', direccion: '', telefono: '', email: '', contacto: '' }); }
+        if (showAddProveedor) setShowAddProveedor(false);
       }
     };
     window.addEventListener('keydown', handleEsc);
@@ -219,7 +201,7 @@ export default function Entrada({ onBack }) {
                     </div>
                   )}
                 </div>
-                <button type="button" onClick={() => { setShowAddProveedor(true); setTimeout(() => proveedorNombreRef.current && proveedorNombreRef.current.focus(), 60); }} className="btn-icon" style={{ width: '36px', height: '36px', fontSize: '16px' }} aria-label="Agregar proveedor" disabled={formData.donacion}>+</button>
+                <button type="button" onClick={() => setShowAddProveedor(true)} className="btn-icon" style={{ width: '36px', height: '36px', fontSize: '16px' }} aria-label="Agregar proveedor" disabled={formData.donacion}>+</button>
               </div>
             </div>
 
@@ -263,35 +245,18 @@ export default function Entrada({ onBack }) {
       {showAddProducto && (
         <ModalNuevoProducto
           onClose={() => setShowAddProducto(false)}
-          onProductoCreado={(nuevo) => {
-            setProductos(prev => [...prev, nuevo]);
-            showToast('Producto agregado', 'success');
-          }}
+          onProductoCreado={(nuevo) => { setProductos(prev => [...prev, nuevo]); }}
           showToast={showToast}
         />
       )}
 
-      {/* Modal nuevo proveedor */}
+      {/* Modal nuevo proveedor — componente reutilizable */}
       {showAddProveedor && (
-        <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) { setShowAddProveedor(false); setNewProveedor({ nombre: '', direccion: '', telefono: '', email: '', contacto: '' }); } }}>
-          <div className="modal-content" role="dialog" aria-modal="true">
-            <h3>Nuevo proveedor</h3>
-            <label>Nombre del proveedor</label>
-            <input ref={proveedorNombreRef} placeholder="Nombre" value={newProveedor.nombre} onChange={(e) => setNewProveedor({ ...newProveedor, nombre: e.target.value })} />
-            <label>Persona de contacto</label>
-            <input placeholder="Nombre del contacto" value={newProveedor.contacto} onChange={(e) => setNewProveedor({ ...newProveedor, contacto: e.target.value })} />
-            <label>Teléfono</label>
-            <input placeholder="Número de teléfono" value={newProveedor.telefono} onChange={(e) => setNewProveedor({ ...newProveedor, telefono: e.target.value })} />
-            <label>Dirección</label>
-            <input placeholder="Dirección completa" value={newProveedor.direccion} onChange={(e) => setNewProveedor({ ...newProveedor, direccion: e.target.value })} />
-            <label>Email</label>
-            <input type="email" placeholder="correo@ejemplo.com" value={newProveedor.email} onChange={(e) => setNewProveedor({ ...newProveedor, email: e.target.value })} />
-            <div className="form-actions">
-              <button type="button" onClick={() => { setShowAddProveedor(false); setNewProveedor({ nombre: '', direccion: '', telefono: '', email: '', contacto: '' }); }} className="btn-outline">Cancelar</button>
-              <button type="button" onClick={handleAddProveedor} className="btn-primary">💾 Guardar</button>
-            </div>
-          </div>
-        </div>
+        <ModalNuevoProveedor
+          onClose={() => setShowAddProveedor(false)}
+          onProveedorCreado={(nuevo) => { setProveedores(prev => [...prev, nuevo]); }}
+          showToast={showToast}
+        />
       )}
     </div>
   );
